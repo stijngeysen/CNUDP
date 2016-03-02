@@ -15,10 +15,20 @@ class UDPClient
        
        //Make new client Socket for UDP connections
        DatagramSocket clientSocket = new DatagramSocket();
+       
        //Get the UDP server address (destination address)
-       InetAddress IPAddress = InetAddress.getByName("localhost");
+       //For localhost (same PC)
+       //InetAddress IPAddress = InetAddress.getByName("localhost");
+       //Otherwise: terminal input:
+       System.out.println("Give Server IP (if Server is on same PC, give 'localhost' or "
+       		+ "127.0.0.1): ");
+       BufferedReader ip =
+    	         new BufferedReader(new InputStreamReader(System.in));
+       String serverIP = ip.readLine();
+       InetAddress IPAddress = InetAddress.getByName(serverIP);
        
 	  //Get input message from User
+       System.out.println("Give Data: ");
       BufferedReader inFromUser =
          new BufferedReader(new InputStreamReader(System.in));
       String sentence = inFromUser.readLine();
