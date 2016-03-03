@@ -21,8 +21,8 @@ public class UDPServer {
     		DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
     		//get the next packet
     		welcomeSocket.receive(receivePacket);
-    		//Run Response
-    		new UDPResponder(welcomeSocket, receivePacket).run();
+    		//Run new Thread for Response
+    		(new UDPResponder(welcomeSocket, receivePacket)).start();
 		}
 		welcomeSocket.close();
 	}

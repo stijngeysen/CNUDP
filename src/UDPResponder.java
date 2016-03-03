@@ -1,8 +1,9 @@
 import java.io.*;
 import java.net.*;
 
-public class UDPResponder implements Runnable{
-
+public class UDPResponder extends Thread{
+	
+	//initialize
     DatagramSocket socket = null;
     DatagramPacket packet = null;	
 	
@@ -14,8 +15,6 @@ public class UDPResponder implements Runnable{
     
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		System.out.println("Received2");
 		byte[] data = response();
 		DatagramPacket sendPacket = new DatagramPacket(data, data.length, packet.getAddress(), packet.getPort());
 		//Send the reply packet
@@ -30,8 +29,10 @@ public class UDPResponder implements Runnable{
 	private byte[] response() {
 		//process data
 		String data = new String(packet.getData());
+		//For Server
 		System.out.println("Client sent: " + data);
 		System.out.println("Client IP:" + packet.getAddress());
+		//For Client
 		String welcome = new String("Welcome client: ");
 		String capitalizedSentence = data.toUpperCase();
 		String toSend = welcome + capitalizedSentence;
