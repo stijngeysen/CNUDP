@@ -1,7 +1,7 @@
 import java.io.*;
 import java.net.*;
 
-public class UDPServer {
+public class UDPServerThread {
 	//port of the server
 	static int port = 18765;
 	//packet length
@@ -22,7 +22,7 @@ public class UDPServer {
     		//get the next packet
     		welcomeSocket.receive(receivePacket);
     		//Run new Thread for Response
-    		(new UDPResponder(welcomeSocket, receivePacket)).start();
+    		(new UDPResponderThread(welcomeSocket, receivePacket)).start();
 		}
 		welcomeSocket.close();
 	}
