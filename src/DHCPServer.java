@@ -1,10 +1,12 @@
-import java.io.*;
-import java.net.*;
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 
-public class UDPServer {
-	//port of the server
+
+public class DHCPServer {
+	//port of the server (normally 67 for DHCP)
 	static int port = 18765;
-	//packet length
+	//packet length (min 236 + options)
 	static int lengte = 512;
 	//Main class
 	public static void main(String[] args) throws IOException {
@@ -22,10 +24,9 @@ public class UDPServer {
     		//get the next packet
     		welcomeSocket.receive(receivePacket);
     		//Run new Thread for Response
-    		(new UDPResponderThread(welcomeSocket, receivePacket)).start();
+    		(new DHCPRespond(welcomeSocket, receivePacket)).start();
 		}
 		welcomeSocket.close();
 	}
-	
 	
 }
