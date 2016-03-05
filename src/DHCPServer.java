@@ -5,7 +5,7 @@ import java.net.DatagramSocket;
 
 public class DHCPServer {
 	//port of the server (normally 67 for DHCP)
-	static int port = 18765;
+	static int port = 1234;
 	//packet length (min 236 + options)
 	static int lengte = 512;
 	//Main class

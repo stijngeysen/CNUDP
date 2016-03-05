@@ -20,7 +20,6 @@ public class DHCPRespond extends Thread{
 		try {
 			response();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
