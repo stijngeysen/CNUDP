@@ -38,6 +38,6 @@ public class DHCPRespond extends Thread{
 		System.out.println("Client port: " + packet.getPort());
 		
 		//For Client
-		DHCPFunctions.DHCPOffer(socket, message.getTransactionID(), InetAddress.getByName("192.192.1.102"), socket.getLocalAddress(), packet.getPort());
+		DHCPFunctions.DHCPOffer(socket, message, packet, InetAddress.getByName("192.192.1.102"));
 	}
 }
