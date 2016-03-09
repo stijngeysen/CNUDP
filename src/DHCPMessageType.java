@@ -8,13 +8,11 @@ public enum DHCPMessageType
 	DHCPRELEASE,		//graceful shutdown from client to Server
 	INVALID;
 	
-	public DHCPMessageType type;
-
 	public byte[] getBytes() {
 		byte[] msg = new byte[3];
 		System.arraycopy(Utils.toBytes(53, 1), 0, msg, 0, 1);
 		System.arraycopy(Utils.toBytes(1, 1), 0, msg, 1, 1);
-		switch (this.type) {
+		switch (this) {
 			case DHCPDISCOVER: System.arraycopy(Utils.toBytes(1, 1), 0, msg, 1, 1);
 			case DHCPOFFER: System.arraycopy(Utils.toBytes(2, 1), 0, msg, 1, 1);
 			case DHCPREQUEST: System.arraycopy(Utils.toBytes(3, 1), 0, msg, 1, 1);

@@ -36,4 +36,11 @@ public class Utils {
 		}
 		return result;
 	}
+	
+	static void printHex(byte[] msg){
+		for(byte b: msg){
+		 System.out.format("%x",b);
+		}
+		System.out.println();
+	}
 }

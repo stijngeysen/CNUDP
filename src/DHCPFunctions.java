@@ -25,14 +25,15 @@ public class DHCPFunctions{
 		byte[] transactionID = new byte[4];
 		rand.nextBytes(transactionID); //random transactionID van 4 bytes
 		int sec = 0; //TODO: nog geen idee wat we we hier mee moeten doen --> 0 is juist, pas na acknowledge wordt hier gebruik van gemaakt
-		byte[] CHA = Utils.toBytes(0, 16);
-		try {
+		byte[] CHA = new byte[16];
+		rand.nextBytes(CHA);
+/*		try {
 			InetAddress IP = InetAddress.getLocalHost();
 			NetworkInterface network = NetworkInterface.getByInetAddress(IP);
 			CHA = network.getHardwareAddress();
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/ //We tried to get the Hardware Address
 
 		DHCPMessage discoverMessage = new DHCPMessage(Utils.toBytes(1, 1), Utils.toBytes(1, 1), Utils.toBytes(6, 1), Utils.toBytes(0), 
 				transactionID, Utils.toBytes(sec, 2), Utils.toBytes(-32768, 2), Utils.toBytes(0), new byte[4], new byte[4], 
@@ -161,3 +162,5 @@ public class DHCPFunctions{
 		}
 	}
 }
+
+

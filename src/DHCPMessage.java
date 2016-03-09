@@ -155,6 +155,9 @@ public class DHCPMessage {
 		System.arraycopy(this.getYourIP(), 0, msg, 16, 4);
 		System.arraycopy(this.getServerIP(), 0, msg, 20, 4);
 		System.arraycopy(this.getGatewayIP(), 0, msg, 24, 4);
+		System.out.println("CHA length: ");
+		System.out.println(this.getClientHardwareAddress().length);
+		Utils.printHex(this.getClientHardwareAddress());
 		System.arraycopy(this.getClientHardwareAddress(), 0, msg, 28, 16);
 		System.arraycopy(this.getServerHostName(), 0, msg, 44, 64);
 		System.arraycopy(this.getBootFileName(), 0, msg, 108, 128);
