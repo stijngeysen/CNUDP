@@ -181,7 +181,7 @@ public class DHCPMessage {
 		this.setOptions(Arrays.copyOfRange(msg, 236, msg.length));
 	}
 	
-	//print message type
+	//print message type //TODO: gebruik option message type
 	public void printMessageType(){
 		if(Arrays.equals(this.getYourIP(), new byte[4])){ //Your IP is nog leeg (0.0.0.0), het is dus een DISCOVER message
 			System.out.println("Received a DHCPDiscover message");

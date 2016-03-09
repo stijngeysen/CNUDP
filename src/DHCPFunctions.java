@@ -21,7 +21,7 @@ public class DHCPFunctions{
 		//Client Hardware Address (MAC)	bv 01:23:45:67:89:ab (16 bytes)
 		//SName		byte[64] (optional server name)
 		//BootFile	byte[128]
-		//Options	var
+		//Options	messageType (code 53)
 		byte[] transactionID = new byte[4];
 		rand.nextBytes(transactionID); //random transactionID van 4 bytes
 		int sec = 0; //TODO: nog geen idee wat we we hier mee moeten doen --> 0 is juist, pas na acknowledge wordt hier gebruik van gemaakt
