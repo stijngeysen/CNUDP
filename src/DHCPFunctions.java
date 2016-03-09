@@ -34,11 +34,12 @@ public class DHCPFunctions{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}*/ //We tried to get the Hardware Address
-
-		DHCPMessage discoverMessage = new DHCPMessage(Utils.toBytes(1, 1), Utils.toBytes(1, 1), Utils.toBytes(6, 1), Utils.toBytes(0), 
+		System.out.println("DHCPtype");
+		DHCPMessageType.DHCPACK.getBytes();
+		DHCPMessage discoverMessage = new DHCPMessage(Utils.toBytes(1, 1), Utils.toBytes(1, 1), Utils.toBytes(6, 1), Utils.toBytes(0, 1), 
 				transactionID, Utils.toBytes(sec, 2), Utils.toBytes(-32768, 2), Utils.toBytes(0), new byte[4], new byte[4], 
 				new byte[4], CHA, new byte[64], new byte[128], DHCPMessageType.DHCPDISCOVER.getBytes());
-
+		System.out.println(Utils.toHexString(discoverMessage.makeMessage()));
 		broadcastMessage(socket, discoverMessage, 1234); //67 is UDP poort voor DHCP server: Client -> server communication
 		System.out.println("DHCPDiscover message broadcasted by me (Client)");
 	}
@@ -63,7 +64,7 @@ public class DHCPFunctions{
 		int sec = 0; //TODO: nog geen idee wat we we hier mee moeten doen --> blijft 0, wordt pas na ack gebruikt
 		byte[] CHA = message.getClientHardwareAddress();
 		
-		DHCPMessage offerMessage = new DHCPMessage(Utils.toBytes(2, 1), Utils.toBytes(1, 1), Utils.toBytes(6, 1), Utils.toBytes(0), 
+		DHCPMessage offerMessage = new DHCPMessage(Utils.toBytes(2, 1), Utils.toBytes(1, 1), Utils.toBytes(6, 1), Utils.toBytes(0, 1), 
 				message.getTransactionID(), Utils.toBytes(sec, 2), Utils.toBytes(-32768, 2), Utils.toBytes(0), yourIP.getAddress(), socket.getLocalAddress().getAddress(), 
 				new byte[4], CHA, new byte[64], new byte[128], DHCPMessageType.DHCPOFFER.getBytes());
 		if (message.getFlags()[0] == 1) { //1e bit van flags = 1 --> broadcast
@@ -91,7 +92,7 @@ public class DHCPFunctions{
 		//BootFile	byte[128]
 		//Options	var
 		int sec = 0;
-		DHCPMessage requestMessage = new DHCPMessage(Utils.toBytes(1, 1), Utils.toBytes(1, 1), Utils.toBytes(6, 1), Utils.toBytes(0), 
+		DHCPMessage requestMessage = new DHCPMessage(Utils.toBytes(1, 1), Utils.toBytes(1, 1), Utils.toBytes(6, 1), Utils.toBytes(0, 1), 
 				message.getTransactionID(), Utils.toBytes(sec, 2), Utils.toBytes(0, 2), Utils.toBytes(0), new byte[4], message.getServerIP(), 
 				new byte[4], message.getClientHardwareAddress(), message.getServerHostName(), new byte[128], DHCPMessageType.DHCPREQUEST.getBytes());
 
@@ -122,7 +123,7 @@ public class DHCPFunctions{
 		int sec = 0; //TODO: nog geen idee wat we we hier mee moeten doen --> blijft 0, wordt pas na ack gebruikt
 		byte[] CHA = message.getClientHardwareAddress();
 		
-		DHCPMessage acknowledgeMessage = new DHCPMessage(Utils.toBytes(2, 1), Utils.toBytes(1, 1), Utils.toBytes(6, 1), Utils.toBytes(0), 
+		DHCPMessage acknowledgeMessage = new DHCPMessage(Utils.toBytes(2, 1), Utils.toBytes(1, 1), Utils.toBytes(6, 1), Utils.toBytes(0, 1), 
 				message.getTransactionID(), Utils.toBytes(sec, 2), Utils.toBytes(-32768, 2), Utils.toBytes(0), yourIP.getAddress(), socket.getLocalAddress().getAddress(), 
 				new byte[4], CHA, new byte[64], new byte[128], DHCPMessageType.DHCPACK.getBytes());
 		if (message.getFlags()[0] == 1) { //1e bit van flags = 1 --> broadcast
@@ -144,7 +145,7 @@ public class DHCPFunctions{
 	public static void broadcastMessage(DatagramSocket socket, DHCPMessage message, int deliveryPort){
 		try {
 			byte[] msg = message.makeMessage();
-			InetAddress broadcast = InetAddress.getByName("10.33.14.246");
+			InetAddress broadcast = InetAddress.getByName("10.33.14.246"); // 255.255.255.255
 			DatagramPacket sendPacket = new DatagramPacket(msg, msg.length, broadcast, deliveryPort);
 			socket.send(sendPacket);
 		} catch (Exception e) {

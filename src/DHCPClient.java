@@ -5,7 +5,7 @@ import java.util.Arrays;
 class DHCPClient
 {
 	//Client Port (Server -> client communication, normally 68)
-	protected static int port = 1234; 
+	protected static int port = 1235; 
 	//packet length (min 236 + options)
 	static int lengte = 512;
 	

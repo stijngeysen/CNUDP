@@ -1,3 +1,5 @@
+import javax.xml.bind.DatatypeConverter;
+
 
 public class Utils {
 	
@@ -42,5 +44,13 @@ public class Utils {
 		 System.out.format("%x",b);
 		}
 		System.out.println();
+	}
+	
+	public static String toHexString(byte[] array) {
+	    return DatatypeConverter.printHexBinary(array);
+	}
+
+	public static byte[] toByteArray(String s) {
+	    return DatatypeConverter.parseHexBinary(s);
 	}
 }
