@@ -71,6 +71,7 @@ public class DHCPFunctions{
 			unicastMessage(socket, offerMessage, packet.getPort(), packet.getAddress()); //normaal is 68 UDP poort voor DHCP client
 		}
 		System.out.println("DHCPOffer message broadcasted by me (Server)");
+		System.out.println("The transactionID was: " + Utils.fromBytes(message.getTransactionID()));
 	}
 
 	public void DHCPRequest(DatagramSocket socket, DHCPMessage message, DatagramPacket packet) {

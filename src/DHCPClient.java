@@ -34,6 +34,7 @@ class DHCPClient
 			System.out.println("Transaction ID: " + Utils.fromBytes(message.getTransactionID()));
 			System.out.println("Hardware Address Length: " + Utils.fromBytes(message.getHardwareAddressLength()));
 			System.out.println("Client IP: " + InetAddress.getByAddress(message.getClientIP()));
+			System.out.println("Your IP: " + InetAddress.getByAddress(message.getYourIP()));
 			System.out.println("Server IP: " + InetAddress.getByAddress(message.getServerIP()));
 			
 			//Close socket
