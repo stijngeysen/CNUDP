@@ -14,6 +14,8 @@ class DHCPClient
 		while(! socket.isClosed()){
 			DHCPFunctions.DHCPDiscover(socket);
 
+			System.out.println();
+			
 			//initialize empty data arrays (if this is placed outside the while loop,
 			//the byte array will contain bytes of previous, longer messages if a short messages
 			//has to be processed
@@ -35,6 +37,8 @@ class DHCPClient
 			System.out.println("Client IP: " + InetAddress.getByAddress(message.getClientIP()));
 			System.out.println("Your IP: " + InetAddress.getByAddress(message.getYourIP()));
 			System.out.println("Server IP: " + InetAddress.getByAddress(message.getServerIP()));
+			
+			System.out.println();
 			
 			DHCPFunctions.DHCPRequest(socket, message, receivePacket);
 			
@@ -59,6 +63,9 @@ class DHCPClient
 			System.out.println("Client IP: " + InetAddress.getByAddress(message2.getClientIP()));
 			System.out.println("Your IP: " + InetAddress.getByAddress(message2.getYourIP()));
 			System.out.println("Server IP: " + InetAddress.getByAddress(message2.getServerIP()));
+			System.out.println("Seconds:  " + Utils.fromBytes(message2.getNumberOfSeconds()));
+			
+			System.out.println();
 			
 			//Close socket
 			if(! Arrays.equals(msg2, new byte[0])){

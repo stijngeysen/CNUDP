@@ -34,10 +34,18 @@ public class DHCPFunctions{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}*/ //We tried to get the Hardware Address
+		
+		byte[] options = new byte[4];
+		System.arraycopy(DHCPMessage.makeMessageTypeOption(DHCPMessageType.DHCPDISCOVER)
+				, 0, options, 0, 3);
+		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 3, 1);		
+		
 		DHCPMessage discoverMessage = new DHCPMessage(Utils.toBytes(1, 1), Utils.toBytes(1, 1), Utils.toBytes(6, 1), Utils.toBytes(0, 1), 
 				transactionID, Utils.toBytes(sec, 2), Utils.toBytes(-32768, 2), Utils.toBytes(0), new byte[4], new byte[4], 
-				new byte[4], CHA, new byte[64], new byte[128], DHCPMessageType.DHCPDISCOVER.getBytes());
+				new byte[4], CHA, new byte[64], new byte[128], options);
+		
 		System.out.println(Utils.toHexString(discoverMessage.makeMessage()));
+		
 		broadcastMessage(socket, discoverMessage, 1234); //67 is UDP poort voor DHCP server: Client -> server communication
 		System.out.println("DHCPDiscover message broadcasted by me (Client)");
 		System.out.println("The transactionID was: " + Utils.fromBytes(discoverMessage.getTransactionID()));
@@ -63,9 +71,14 @@ public class DHCPFunctions{
 		int sec = 0; //TODO: nog geen idee wat we we hier mee moeten doen --> blijft 0, wordt pas na ack gebruikt
 		byte[] CHA = message.getClientHardwareAddress();
 		
+		byte[] options = new byte[4];
+		System.arraycopy(DHCPMessage.makeMessageTypeOption(DHCPMessageType.DHCPOFFER)
+				, 0, options, 0, 3);
+		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 3, 1);	
+		
 		DHCPMessage offerMessage = new DHCPMessage(Utils.toBytes(2, 1), Utils.toBytes(1, 1), Utils.toBytes(6, 1), Utils.toBytes(0, 1), 
 				message.getTransactionID(), Utils.toBytes(sec, 2), Utils.toBytes(-32768, 2), Utils.toBytes(0), yourIP.getAddress(), socket.getLocalAddress().getAddress(), 
-				new byte[4], CHA, new byte[64], new byte[128], DHCPMessageType.DHCPOFFER.getBytes());
+				new byte[4], CHA, new byte[64], new byte[128], options);
 		if (message.getFlags()[0] == 1) { //1e bit van flags = 1 --> broadcast
 			broadcastMessage(socket, offerMessage, packet.getPort()); //normaal is 68 UDP poort voor DHCP client
 		} else { // 1e bit van flags = 0 --> unicast
@@ -91,9 +104,19 @@ public class DHCPFunctions{
 		//BootFile	byte[128]
 		//Options	var
 		int sec = 0;
+		
+		byte[] options = new byte[16];
+		System.arraycopy(DHCPMessage.makeMessageTypeOption(DHCPMessageType.DHCPREQUEST)
+				, 0, options, 0, 3);
+		System.arraycopy(DHCPMessage.makeMessageIDOption(50, message.getYourIP())
+				, 0, options, 3, 6);
+		System.arraycopy(DHCPMessage.makeMessageIDOption(54, message.getServerIP())
+				, 0, options, 9, 6);
+		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 15, 1);	
+		
 		DHCPMessage requestMessage = new DHCPMessage(Utils.toBytes(1, 1), Utils.toBytes(1, 1), Utils.toBytes(6, 1), Utils.toBytes(0, 1), 
 				message.getTransactionID(), Utils.toBytes(sec, 2), Utils.toBytes(0, 2), Utils.toBytes(0), new byte[4], message.getServerIP(), 
-				new byte[4], message.getClientHardwareAddress(), message.getServerHostName(), new byte[128], DHCPMessageType.DHCPREQUEST.getBytes());
+				new byte[4], message.getClientHardwareAddress(), message.getServerHostName(), new byte[128], options);
 
 		if (message.getFlags()[0] == 1) {
 			broadcastMessage(socket, requestMessage, packet.getPort());
@@ -123,9 +146,14 @@ public class DHCPFunctions{
 		int sec = 0; //TODO: nog geen idee wat we we hier mee moeten doen --> blijft 0, wordt pas na ack gebruikt
 		byte[] CHA = message.getClientHardwareAddress();
 		
+		byte[] options = new byte[4];
+		System.arraycopy(DHCPMessage.makeMessageTypeOption(DHCPMessageType.DHCPACK)
+				, 0, options, 0, 3);
+		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 3, 1);	
+		
 		DHCPMessage acknowledgeMessage = new DHCPMessage(Utils.toBytes(2, 1), Utils.toBytes(1, 1), Utils.toBytes(6, 1), Utils.toBytes(0, 1), 
 				message.getTransactionID(), Utils.toBytes(sec, 2), Utils.toBytes(-32768, 2), Utils.toBytes(0), yourIP.getAddress(), socket.getLocalAddress().getAddress(), 
-				new byte[4], CHA, new byte[64], new byte[128], DHCPMessageType.DHCPACK.getBytes());
+				new byte[4], CHA, new byte[64], new byte[128], options);
 		if (message.getFlags()[0] == 1) { //1e bit van flags = 1 --> broadcast
 			broadcastMessage(socket, acknowledgeMessage, packet.getPort()); //normaal is 68 UDP poort voor DHCP client
 		} else { // 1e bit van flags = 0 --> unicast

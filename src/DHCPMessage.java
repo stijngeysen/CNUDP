@@ -195,7 +195,7 @@ public class DHCPMessage {
 	}
 	
 	
-	public byte[] makeMessageTypeOption(DHCPMessageType messageType){
+	public static byte[] makeMessageTypeOption(DHCPMessageType messageType){
 		byte[] msg = new byte[3];
 		System.arraycopy(Utils.toBytes(53, 1), 0, msg, 0, 1);
 		System.arraycopy(Utils.toBytes(1, 1), 0, msg, 1, 1);
@@ -203,11 +203,17 @@ public class DHCPMessage {
 		return msg;		
 	}
 	
-	public byte[] makeEndOption(){
+	public static byte[] makeMessageIDOption(int option, byte[] address){
+		byte[] msg = new byte[6];
+		System.arraycopy(Utils.toBytes(option, 1), 0, msg, 0, 1); //54 ServerIP -  50 RequestIP
+		System.arraycopy(Utils.toBytes(4, 1), 0, msg, 1, 1);
+		System.arraycopy(address, 0, msg, 2, 4);
+		return msg;		
+	}
+	
+	public static byte[] makeEndOption(){
 		byte[] msg = new byte[1];
 		System.arraycopy(Utils.toBytes(255, 1), 0, msg, 0, 1);
 		return msg;		
 	}
-	
-	
 }
