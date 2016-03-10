@@ -1,7 +1,6 @@
 import java.net.*;
 import java.util.Arrays;
 
-
 class DHCPClient
 {
 	//Client Port (Server -> client communication, normally 68)
