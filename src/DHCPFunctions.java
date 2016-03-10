@@ -40,6 +40,7 @@ public class DHCPFunctions{
 		System.out.println(Utils.toHexString(discoverMessage.makeMessage()));
 		broadcastMessage(socket, discoverMessage, 1234); //67 is UDP poort voor DHCP server: Client -> server communication
 		System.out.println("DHCPDiscover message broadcasted by me (Client)");
+		System.out.println("The transactionID was: " + Utils.fromBytes(discoverMessage.getTransactionID()));
 	}
 
 	public static void DHCPOffer(DatagramSocket socket, DHCPMessage message, DatagramPacket packet, InetAddress yourIP) {
@@ -71,7 +72,6 @@ public class DHCPFunctions{
 			unicastMessage(socket, offerMessage, packet.getPort(), packet.getAddress()); //normaal is 68 UDP poort voor DHCP client
 		}
 		System.out.println("DHCPOffer message broadcasted by me (Server)");
-		System.out.println("The transactionID was: " + Utils.fromBytes(message.getTransactionID()));
 	}
 
 	public void DHCPRequest(DatagramSocket socket, DHCPMessage message, DatagramPacket packet) {
