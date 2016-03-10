@@ -183,12 +183,21 @@ public class DHCPMessage {
 	
 	//print message type //TODO: gebruik option message type
 	public void printMessageType(){
-		if(Arrays.equals(this.getYourIP(), new byte[4])){ //Your IP is nog leeg (0.0.0.0), het is dus een DISCOVER message
+		byte[] b = new byte[1];
+		for (int i=0; i<this.getOptions().length; i++) {
+			b[0] = this.getOptions()[i];
+			if (Utils.fromBytes(b) == 53){
+				System.out.println("Options field found!");
+				b[0] = this.getOptions()[i+2];
+				System.out.println("Type Hex Value: " + Utils.toHexString(b));
+			}
+		}
+/*		if(Arrays.equals(this.getYourIP(), new byte[4])){ //Your IP is nog leeg (0.0.0.0), het is dus een DISCOVER message
 			System.out.println("Received a DHCPDiscover message");
 		} else if(this.getOptions().length == 0) { 
 			//Your IP is niet meer leeg, maar er zijn nog geen opties gezet zoals 'Server Identifier' en 'requested IP address'
 			System.out.println("Received a DHCPOffer message");
-		}
+		}*/
 		//TODO: aanvullen!
 	}
 }

@@ -62,10 +62,10 @@ class DHCPClient
 			System.out.println("Server IP: " + InetAddress.getByAddress(message2.getServerIP()));
 			
 			//Close socket
-/*			if(! Arrays.equals(msg2, new byte[0])){
+			if(! Arrays.equals(msg2, new byte[0])){
 				System.out.println("Socket Closing");
 				socket.close();
-			}*/
+			}
 			
 		}
 	}
