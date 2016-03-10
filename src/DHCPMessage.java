@@ -192,12 +192,22 @@ public class DHCPMessage {
 				System.out.println("Type Hex Value: " + Utils.toHexString(b));
 			}
 		}
-/*		if(Arrays.equals(this.getYourIP(), new byte[4])){ //Your IP is nog leeg (0.0.0.0), het is dus een DISCOVER message
-			System.out.println("Received a DHCPDiscover message");
-		} else if(this.getOptions().length == 0) { 
-			//Your IP is niet meer leeg, maar er zijn nog geen opties gezet zoals 'Server Identifier' en 'requested IP address'
-			System.out.println("Received a DHCPOffer message");
-		}*/
-		//TODO: aanvullen!
 	}
+	
+	
+	public byte[] makeMessageTypeOption(DHCPMessageType messageType){
+		byte[] msg = new byte[3];
+		System.arraycopy(Utils.toBytes(53, 1), 0, msg, 0, 1);
+		System.arraycopy(Utils.toBytes(1, 1), 0, msg, 1, 1);
+		System.arraycopy(Utils.toBytes(messageType.getValue(), 1), 0, msg, 2, 1);
+		return msg;		
+	}
+	
+	public byte[] makeEndOption(){
+		byte[] msg = new byte[1];
+		System.arraycopy(Utils.toBytes(255, 1), 0, msg, 0, 1);
+		return msg;		
+	}
+	
+	
 }
