@@ -74,7 +74,7 @@ public class DHCPFunctions{
 		System.out.println("DHCPOffer message broadcasted by me (Server)");
 	}
 
-	public void DHCPRequest(DatagramSocket socket, DHCPMessage message, DatagramPacket packet) {
+	public static void DHCPRequest(DatagramSocket socket, DHCPMessage message, DatagramPacket packet) {
 		//op:		1 (request) (1 = bootrequest, 2 = bootreply)
 		//htype: 	1 (ethernet) (hardware address type)
 		//hlen:		6 (IEEE 802 MAC addresses) (hardware address length)
@@ -101,9 +101,10 @@ public class DHCPFunctions{
 			unicastMessage(socket, requestMessage, packet.getPort(), packet.getAddress());
 		}
 		System.out.println("DHCPRequest message broadcasted by me (Client)");
+		System.out.println("The transactionID was: " + Utils.fromBytes(message.getTransactionID()));
 	}
 
-	public void DHCPAck(DatagramSocket socket, DHCPMessage message, DatagramPacket packet, InetAddress yourIP){
+	public static void DHCPAck(DatagramSocket socket, DHCPMessage message, DatagramPacket packet, InetAddress yourIP){
 		//op:		2 (reply)
 		//htype: 	1 (ethernet)
 		//hlen:		6 (IEEE 802 MAC addresses)
@@ -133,11 +134,11 @@ public class DHCPFunctions{
 		System.out.println("DHCPAcknowledge message broadcasted by me (Server)");
 	}
 
-	public void DHCPNak() {
+	public static void DHCPNak() {
 		System.out.println("DHCPNak message unicasted by me (Server)");
 	}
 
-	public void DHCPRelease() {
+	public static void DHCPRelease() {
 		System.out.println("DHCPRelease message unicasted by me (Client)");
 	}
 
