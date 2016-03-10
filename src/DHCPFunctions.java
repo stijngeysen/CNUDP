@@ -34,8 +34,6 @@ public class DHCPFunctions{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}*/ //We tried to get the Hardware Address
-		System.out.println("DHCPtype");
-		DHCPMessageType.DHCPACK.getBytes();
 		DHCPMessage discoverMessage = new DHCPMessage(Utils.toBytes(1, 1), Utils.toBytes(1, 1), Utils.toBytes(6, 1), Utils.toBytes(0, 1), 
 				transactionID, Utils.toBytes(sec, 2), Utils.toBytes(-32768, 2), Utils.toBytes(0), new byte[4], new byte[4], 
 				new byte[4], CHA, new byte[64], new byte[128], DHCPMessageType.DHCPDISCOVER.getBytes());

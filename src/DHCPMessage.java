@@ -154,9 +154,7 @@ public class DHCPMessage {
 		System.arraycopy(this.getClientIP(), 0, msg, 12, 4);
 		System.arraycopy(this.getYourIP(), 0, msg, 16, 4);
 		System.arraycopy(this.getServerIP(), 0, msg, 20, 4);
-		System.arraycopy(this.getGatewayIP(), 0, msg, 24, 4);
-		System.out.println("flag: ");
-		System.out.println(Utils.toHexString(this.getFlags()));
+		System.arraycopy(this.getGatewayIP(), 0, msg, 24, 4);;
 		System.arraycopy(this.getClientHardwareAddress(), 0, msg, 28, 16);
 		System.arraycopy(this.getServerHostName(), 0, msg, 44, 64);
 		System.arraycopy(this.getBootFileName(), 0, msg, 108, 128);

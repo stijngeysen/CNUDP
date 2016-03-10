@@ -27,6 +27,7 @@ class DHCPClient
 			//process data
 			byte[] msg = receivePacket.getData();
 			DHCPMessage message = new DHCPMessage(msg);
+			System.out.println("Message received! ");
 			message.printMessageType();
 			
 			//Data information
