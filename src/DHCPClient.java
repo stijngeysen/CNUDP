@@ -29,7 +29,7 @@ class DHCPClient
 			byte[] msg = receivePacket.getData();
 			DHCPMessage message = new DHCPMessage(msg);
 			System.out.println("Message received! ");
-			message.printMessageType();
+			message.getMessageType();
 			
 			//Data information
 			System.out.println("Transaction ID: " + Utils.fromBytes(message.getTransactionID()));
@@ -55,7 +55,7 @@ class DHCPClient
 			byte[] msg2 = requestPacket.getData();
 			DHCPMessage message2 = new DHCPMessage(msg2);
 			System.out.println("Message received! ");
-			message2.printMessageType();
+			message2.getMessageType();
 			
 			//Data information
 			System.out.println("Transaction ID: " + Utils.fromBytes(message2.getTransactionID()));

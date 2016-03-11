@@ -181,8 +181,8 @@ public class DHCPMessage {
 		this.setOptions(Arrays.copyOfRange(msg, 236, msg.length));
 	}
 	
-	//print message type //TODO: gebruik option message type
-	public void printMessageType(){
+	//print message type
+	public byte[] getMessageType(){
 		byte[] b = new byte[1];
 		for (int i=0; i<this.getOptions().length; i++) {
 			b[0] = this.getOptions()[i];
@@ -192,6 +192,7 @@ public class DHCPMessage {
 				System.out.println("Type Hex Value: " + Utils.toHexString(b));
 			}
 		}
+		return b;
 	}
 	
 	

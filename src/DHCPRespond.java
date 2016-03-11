@@ -28,7 +28,6 @@ public class DHCPRespond extends Thread{
 		//process data
 		byte[] msg = packet.getData();
 		DHCPMessage message = new DHCPMessage(msg);
-		message.printMessageType();
 		
 		//For Server
 		System.out.println("Transaction ID: " + Utils.fromBytes(message.getTransactionID()));
@@ -38,6 +37,22 @@ public class DHCPRespond extends Thread{
 		System.out.println("Client port: " + packet.getPort());
 		
 		//For Client
-		DHCPFunctions.DHCPOffer(socket, message, packet, InetAddress.getByName("192.192.1.102"));
+		switch(Utils.fromBytes(message.getMessageType())) {
+				case 1: //message was a Discover message, we will reply with an offer
+					DHCPFunctions.DHCPOffer(socket, message, packet, InetAddress.getByName("192.192.1.102"));
+					break;
+				case 2: //received an offer (from an other server) or wrong messagetype from client so do nothing
+					break;
+				case 3: //received a request from a client, reply with an ACK if IP is not in use, with an NAk if IP is in use
+					//TODO: ip checken
+					DHCPFunctions.DHCPAck(socket, message, packet, InetAddress.getByAddress(message.getYourIP()));
+					break;
+				case 5: //received an ACK message (from an other server) or wrong messagetype from client so do nothing
+					break;
+				case 6: //received an NACK message (from an other server) or wrong messagetype from client so do nothing
+					break;
+				case 7: //received a Relase message
+					//TODO: release processen
+		}
 	}
 }

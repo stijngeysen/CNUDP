@@ -1,7 +1,29 @@
+import java.net.*;
+import java.io.*;
+
 import javax.xml.bind.DatatypeConverter;
 
 
 public class Utils {
+	
+	//READ From .txt file
+	//TODO: afmaken
+	static InetAddress getIpFromTxt(){
+	    String content = null;
+	    File file = new File("ipaddress.txt"); //for ex foo.txt
+	    FileReader reader = null;
+	    try {
+	        reader = new FileReader(file);
+	        char[] chars = new char[(int) file.length()];
+	        reader.read(chars);
+	        content = new String(chars);
+	        reader.close();
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    } finally {
+	        if(reader !=null){reader.close();}
+	    }
+	}
 	
 	//CONVERSIONS: byte[] <-> int
 	
