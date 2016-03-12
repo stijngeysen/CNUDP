@@ -23,6 +23,7 @@ public class DHCPServer {
     		DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
     		//get the next packet
     		welcomeSocket.receive(receivePacket);
+    		System.out.println("packet received");
     		//Run new Thread for Response
     		(new DHCPRespond(welcomeSocket, receivePacket)).start();
 		}

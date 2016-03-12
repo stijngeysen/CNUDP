@@ -222,11 +222,12 @@ public class DHCPMessage {
 	public static byte[] makeEndOption(){
 		byte[] msg = new byte[1];
 		System.arraycopy(Utils.toBytes(255, 1), 0, msg, 0, 1);
-		return msg;		
+		return msg;
 	}
 	
 	public byte[] getMessageOption(int option){
 		byte[] b = new byte[1];
+		byte[] result = null;
 		options = this.getOptions();
 		int i=0;
 		while (i < options.length) {
@@ -235,16 +236,19 @@ public class DHCPMessage {
 			l[0] = options[i+1];
 			int lengte = Utils.fromBytes(l);
 			if (Utils.fromBytes(b) == option){
-				byte[] result = new byte[lengte];
+				result = new byte[lengte];
 				for (int j=0; j < lengte; j++) {
 					result[j] = options[i+2+j];
 				}
+				break;
+			} else if (Utils.fromBytes(b) == 255) {
+				System.out.println("ERROR: option not available.");
 				break;
 			} else {
 				i += lengte + 2;
 			}
 		}
-		return b;
+		return result;
 	}
 
 }

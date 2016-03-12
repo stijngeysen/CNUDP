@@ -73,7 +73,7 @@ public class DHCPFunctions{
 		System.arraycopy(DHCPMessage.makeMessageTypeOption(DHCPMessageType.DHCPOFFER)
 				, 0, options, 0, 3);
 		System.arraycopy(DHCPMessage.makeMessageLeaseTimeOption(IPLeaseTime)
-				, 0, options, 9, 6);
+				, 0, options, 3, 6);
 		System.arraycopy(DHCPMessage.makeMessageIDOption(54, message.getServerIP())
 				, 0, options, 9, 6);
 		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 3, 1);	
@@ -152,7 +152,7 @@ public class DHCPFunctions{
 				, 0, options, 0, 3);
 		System.arraycopy(DHCPMessage.makeMessageIDOption(50, message.getYourIP())
 				, 0, options, 3, 6);
-		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 15, 1);	
+		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 9, 1);	
 		
 		DHCPMessage extendedRequestMessage = new DHCPMessage(Utils.toBytes(1, 1), Utils.toBytes(1, 1), Utils.toBytes(6, 1), Utils.toBytes(0, 1), 
 				message.getTransactionID(), Utils.toBytes(sec, 2), Utils.toBytes(0, 2), Utils.toBytes(0), new byte[4], message.getServerIP(), 
@@ -190,7 +190,7 @@ public class DHCPFunctions{
 		System.arraycopy(DHCPMessage.makeMessageTypeOption(DHCPMessageType.DHCPACK)
 				, 0, options, 0, 3);
 		System.arraycopy(DHCPMessage.makeMessageLeaseTimeOption(IPLeaseTime)
-				, 0, options, 9, 6);
+				, 0, options, 3, 6);
 		System.arraycopy(DHCPMessage.makeMessageIDOption(54, message.getServerIP()) //TODO: wrs niet getServerIP()??
 				, 0, options, 9, 6);
 		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 15, 1);
@@ -250,7 +250,7 @@ public class DHCPFunctions{
 	public static void broadcastMessage(DatagramSocket socket, DHCPMessage message, int deliveryPort){
 		try {
 			byte[] msg = message.makeMessage();
-			InetAddress broadcast = InetAddress.getByName("10.33.14.246"); // 255.255.255.255
+			InetAddress broadcast = InetAddress.getByName("255.255.255.255"); // 255.255.255.255		10.33.14.246
 			DatagramPacket sendPacket = new DatagramPacket(msg, msg.length, broadcast, deliveryPort);
 			socket.send(sendPacket);
 		} catch (Exception e) {

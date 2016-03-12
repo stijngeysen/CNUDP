@@ -37,7 +37,7 @@ public class DHCPRespond extends Thread{
 		System.out.println("Client port: " + packet.getPort());
 		
 		//For Client
-		switch(Utils.fromBytes(message.getMessageType())) {
+		switch(Utils.fromBytes(message.getMessageOption(53))) {
 				case 1: //message was a Discover message, we will reply with an offer
 					DHCPFunctions.DHCPOffer(socket, message, packet, InetAddress.getByName("192.192.1.102"), 5);
 					break;
