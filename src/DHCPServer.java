@@ -25,7 +25,8 @@ public class DHCPServer {
     		DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
     		//get the next packet
     		welcomeSocket.receive(receivePacket);
-    		System.out.println("packet received");
+    		//Delete IP's which exist for too long
+    		
     		//Run new Thread for Response
     		(new DHCPRespond(welcomeSocket, receivePacket, usedIPs)).start();
 		}
