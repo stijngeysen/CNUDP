@@ -1,5 +1,4 @@
 import java.util.Arrays;
-//TODO: vragen of deze klasse gebruikt mag worden
 
 public class DHCPMessage {
 	//CONSTRUCT empty message
@@ -212,9 +211,40 @@ public class DHCPMessage {
 		return msg;		
 	}
 	
+	public static Object makeMessageLeaseTimeOption(int IPLeaseTime) {
+		byte[] msg = new byte[6];
+		System.arraycopy(Utils.toBytes(51, 1), 0, msg, 0, 1);
+		System.arraycopy(Utils.toBytes(4, 1), 0, msg, 1, 1);
+		System.arraycopy(Utils.toBytes(IPLeaseTime, 4), 0, msg, 2, 4);
+		return msg;
+	}
+	
 	public static byte[] makeEndOption(){
 		byte[] msg = new byte[1];
 		System.arraycopy(Utils.toBytes(255, 1), 0, msg, 0, 1);
 		return msg;		
 	}
+	
+	public byte[] getMessageOption(int option){
+		byte[] b = new byte[1];
+		options = this.getOptions();
+		int i=0;
+		while (i < options.length) {
+			b[0] = options[i];
+			byte[] l = new byte[1];
+			l[0] = options[i+1];
+			int lengte = Utils.fromBytes(l);
+			if (Utils.fromBytes(b) == option){
+				byte[] result = new byte[lengte];
+				for (int j=0; j < lengte; j++) {
+					result[j] = options[i+2+j];
+				}
+				break;
+			} else {
+				i += lengte + 2;
+			}
+		}
+		return b;
+	}
+
 }
