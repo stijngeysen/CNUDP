@@ -39,13 +39,13 @@ public class DHCPRespond extends Thread{
 		//For Client
 		switch(Utils.fromBytes(message.getMessageType())) {
 				case 1: //message was a Discover message, we will reply with an offer
-					DHCPFunctions.DHCPOffer(socket, message, packet, InetAddress.getByName("192.192.1.102"));
+					DHCPFunctions.DHCPOffer(socket, message, packet, InetAddress.getByName("192.192.1.102"), 5);
 					break;
 				case 2: //received an offer (from an other server) or wrong messagetype from client so do nothing
 					break;
 				case 3: //received a request from a client, reply with an ACK if IP is not in use, with an NAk if IP is in use
 					//TODO: ip checken
-					DHCPFunctions.DHCPAck(socket, message, packet, InetAddress.getByAddress(message.getYourIP()));
+					DHCPFunctions.DHCPAck(socket, message, packet, InetAddress.getByAddress(message.getYourIP()), 5);
 					break;
 				case 5: //received an ACK message (from an other server) or wrong messagetype from client so do nothing
 					break;

@@ -63,7 +63,6 @@ class UDPClient
 			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, broadcast, 68);
 			welcomeSocket.send(sendPacket);
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		welcomeSocket.close();
