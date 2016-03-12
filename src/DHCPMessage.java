@@ -242,7 +242,6 @@ public class DHCPMessage {
 				}
 				break;
 			} else if (Utils.fromBytes(b) == 255) {
-				System.out.println("ERROR: option not available.");
 				break;
 			} else {
 				i += lengte + 2;

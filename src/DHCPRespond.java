@@ -7,12 +7,14 @@ import java.net.UnknownHostException;
 public class DHCPRespond extends Thread{
 	//initialize
     DatagramSocket socket = null;
-    DatagramPacket packet = null;	
+    DatagramPacket packet = null;
+    UsedIPs usedIPs = null;
 	
     //Constructor
-    public DHCPRespond(DatagramSocket socket, DatagramPacket packet){
+    public DHCPRespond(DatagramSocket socket, DatagramPacket packet, UsedIPs usedIPs){
     	this.socket = socket;
     	this.packet = packet;
+    	this.usedIPs = usedIPs;
     }
     
 	@Override
@@ -39,13 +41,24 @@ public class DHCPRespond extends Thread{
 		//For Client
 		switch(Utils.fromBytes(message.getMessageOption(53))) {
 				case 1: //message was a Discover message, we will reply with an offer
-					DHCPFunctions.DHCPOffer(socket, message, packet, InetAddress.getByName("192.192.1.102"), 5);
+					byte[] YI = this.usedIPs.askIP();
+					DHCPFunctions.DHCPOffer(socket, message, packet, InetAddress.getByAddress(YI), 5);
 					break;
 				case 2: //received an offer (from an other server) or wrong messagetype from client so do nothing
 					break;
 				case 3: //received a request from a client, reply with an ACK if IP is not in use, with an NAk if IP is in use
-					//TODO: ip checken
-					DHCPFunctions.DHCPAck(socket, message, packet, InetAddress.getByAddress(message.getYourIP()), 5);
+					if (message.getMessageOption(54) != null) {
+						byte[] IP = this.usedIPs.askIP();
+						DHCPFunctions.DHCPAck(socket, message, packet, InetAddress.getByAddress(IP), 5);
+					}
+					else {
+						byte[] IP = message.getYourIP();
+						if (this.usedIPs.extendIP(IP)) {
+							DHCPFunctions.DHCPAck(socket, message, packet, InetAddress.getByAddress(IP), 5);
+						} else {
+							DHCPFunctions.DHCPNak(socket, message, packet, InetAddress.getByAddress(IP));
+						}
+					}
 					break;
 				case 5: //received an ACK message (from an other server) or wrong messagetype from client so do nothing
 					break;
@@ -55,4 +68,9 @@ public class DHCPRespond extends Thread{
 					//TODO: release processen
 		}
 	}
+	
+	
+	
+	
+	
 }

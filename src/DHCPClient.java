@@ -1,4 +1,5 @@
 import java.net.*;
+import java.util.Date;
 //import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
@@ -8,6 +9,7 @@ class DHCPClient
 	protected static int port = 1235; 
 	//packet length (min 236 + options)
 	static int lengte = 512;
+	
 	
 	public static void main(String args[]) throws Exception
 	{
@@ -29,7 +31,7 @@ class DHCPClient
 			DHCPMessage message = new DHCPMessage(msg);
 			if (Utils.fromBytes(message.getMessageOption(53)) != 2) {
 				System.out.println("ERROR: No DHCPOffer received.");
-				break; //continue
+				continue;
 			}
 			
 			//Data information

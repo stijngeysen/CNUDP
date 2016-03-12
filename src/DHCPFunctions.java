@@ -229,8 +229,8 @@ public class DHCPFunctions{
 		System.arraycopy(DHCPMessage.makeMessageTypeOption(DHCPMessageType.DHCPACK)
 				, 0, options, 0, 3);
 		System.arraycopy(DHCPMessage.makeMessageIDOption(54, message.getServerIP()) //TODO: wrs niet getServerIP()??
-				, 0, options, 9, 6);
-		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 15, 1);
+				, 0, options, 3, 6);
+		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 9, 1);
 		
 		DHCPMessage negativeAcknowledgeMessage = new DHCPMessage(Utils.toBytes(2, 1), Utils.toBytes(1, 1), Utils.toBytes(6, 1), Utils.toBytes(0, 1), 
 				message.getTransactionID(), Utils.toBytes(sec, 2), Utils.toBytes(-32768, 2), Utils.toBytes(0), yourIP.getAddress(), socket.getLocalAddress().getAddress(), 

@@ -8,6 +8,8 @@ public class DHCPServer {
 	static int port = 1234;
 	//packet length (min 236 + options)
 	static int lengte = 512;
+	//used IP's
+	static UsedIPs usedIPs = new UsedIPs();
 	//Main class
 	public static void main(String[] args) throws IOException {
 		DatagramSocket welcomeSocket = new DatagramSocket(port);
@@ -25,7 +27,7 @@ public class DHCPServer {
     		welcomeSocket.receive(receivePacket);
     		System.out.println("packet received");
     		//Run new Thread for Response
-    		(new DHCPRespond(welcomeSocket, receivePacket)).start();
+    		(new DHCPRespond(welcomeSocket, receivePacket, usedIPs)).start();
 		}
 		welcomeSocket.close();
 	}
