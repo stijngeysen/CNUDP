@@ -49,6 +49,7 @@ class DHCPClient
 			System.out.println("Hardware Address Length: " + Utils.fromBytes(message.getHardwareAddressLength()));
 			System.out.println("Client IP: " + InetAddress.getByAddress(message.getClientIP()));
 			System.out.println("Your IP: " + InetAddress.getByAddress(message.getYourIP()));
+			System.out.println("LeaseTime: " + Utils.fromBytes(message.getMessageOption(51)));			
 			System.out.println("Server IP: " + InetAddress.getByAddress(message.getServerIP()));
 			System.out.println();
 			System.out.println();
@@ -89,6 +90,7 @@ class DHCPClient
 				System.out.println("Hardware Address Length: " + Utils.fromBytes(message.getHardwareAddressLength()));
 				System.out.println("Client IP: " + InetAddress.getByAddress(message.getClientIP()));
 				System.out.println("Your IP: " + InetAddress.getByAddress(message.getYourIP()));
+				System.out.println("LeaseTime: " + Utils.fromBytes(message.getMessageOption(51)));
 				System.out.println("Server IP: " + InetAddress.getByAddress(message.getServerIP()));
 				System.out.println("Seconds:  " + Utils.fromBytes(message.getNumberOfSeconds()));
 				System.out.println();
@@ -105,6 +107,7 @@ class DHCPClient
 				System.out.println("HEX CODE");
 				System.out.println(Utils.toHexString(message.makeMessage()));
 				System.out.println();
+				System.out.println("Your IP: " + InetAddress.getByAddress(message.getYourIP()));
 				System.out.println("options length: " + message.getOptions().length);
 				System.out.print("options hex: ");
 				System.out.println(Utils.toHexString(message.getOptions()));
@@ -133,6 +136,8 @@ class DHCPClient
 				System.out.println(Utils.toHexString(message.makeMessage()));
 				System.out.println();
 				message = new DHCPMessage(msg);
+				System.out.println("Your IP: " + InetAddress.getByAddress(message.getYourIP()));
+				System.out.println("LeaseTime: " + Utils.fromBytes(message.getMessageOption(51)));
 				if (Utils.fromBytes(message.getMessageOption(53)) != 5) {
 					System.out.println("ERROR: Negative acknowledge received.");
 					break;

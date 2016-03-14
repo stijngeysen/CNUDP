@@ -174,7 +174,6 @@ public class DHCPFunctions{
 		System.arraycopy(DHCPMessage.makeMessageTypeOption(DHCPMessageType.DHCPREQUEST)
 				, 0, options, 4, 3);
 		System.arraycopy(DHCPMessage.makeMessageIDOption(50, message.getYourIP()) 
-		//System.arraycopy(DHCPMessage.makeMessageIDOption(50, message.getClientHardwareAddress()) 
 				, 0, options, 7, 6);
 		System.arraycopy(DHCPMessage.makeMessageLeaseTimeOption(10000), 0, options, 13, 6); //TODO: hier toegevoegd, 1000 leasetime voorlopig hardcoded
 		System.arraycopy(DHCPMessage.makeMessageIDOption(54, message.getServerIP())
