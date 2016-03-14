@@ -33,6 +33,7 @@ class DHCPClient
 			//process data
 			byte[] msg = receivePacket.getData();
 			DHCPMessage message = new DHCPMessage(msg);
+			System.out.println(Utils.toHexString(msg));
 			if (Utils.fromBytes(message.getMessageOption(53)) != 2) {
 				System.out.println("ERROR: No DHCPOffer received.");
 				continue;
