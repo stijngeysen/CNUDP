@@ -34,10 +34,12 @@ public class DHCPFunctions{
 			e.printStackTrace();
 		}*/ //We tried to get the Hardware Address
 		
-		byte[] options = new byte[4];
+		byte[] options = new byte[8];
+		System.arraycopy(DHCPMessage.makeMagicCookie()
+				, 0, options, 0, 4);
 		System.arraycopy(DHCPMessage.makeMessageTypeOption(DHCPMessageType.DHCPDISCOVER)
-				, 0, options, 0, 3);
-		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 3, 1);		
+				, 0, options, 4, 3);
+		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 7, 1);		
 		
 		DHCPMessage discoverMessage = new DHCPMessage(Utils.toBytes(1, 1), Utils.toBytes(1, 1), Utils.toBytes(6, 1), Utils.toBytes(0, 1), 
 				transactionID, Utils.toBytes(sec, 2), Utils.toBytes(-32768, 2), Utils.toBytes(0), new byte[4], new byte[4], 
@@ -71,14 +73,16 @@ public class DHCPFunctions{
 		int sec = 0;
 		byte[] CHA = message.getClientHardwareAddress();
 		
-		byte[] options = new byte[16];
+		byte[] options = new byte[20];
+		System.arraycopy(DHCPMessage.makeMagicCookie()
+				, 0, options, 0, 4);
 		System.arraycopy(DHCPMessage.makeMessageTypeOption(DHCPMessageType.DHCPOFFER)
-				, 0, options, 0, 3);
+				, 0, options, 4, 3);
 		System.arraycopy(DHCPMessage.makeMessageLeaseTimeOption(IPLeaseTime)
-				, 0, options, 3, 6);
+				, 0, options, 7, 6);
 		System.arraycopy(DHCPMessage.makeMessageIDOption(54, message.getServerIP())
-				, 0, options, 9, 6);
-		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 15, 1);	
+				, 0, options, 13, 6);
+		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 19, 1);	
 		
 		DHCPMessage offerMessage = new DHCPMessage(Utils.toBytes(2, 1), Utils.toBytes(1, 1), Utils.toBytes(6, 1), Utils.toBytes(0, 1), 
 				message.getTransactionID(), Utils.toBytes(sec, 2), Utils.toBytes(-32768, 2), Utils.toBytes(0), yourIP.getAddress(), socket.getLocalAddress().getAddress(), 
@@ -111,15 +115,17 @@ public class DHCPFunctions{
 		//Options	var
 		int sec = 0;
 		
-		byte[] options = new byte[22];
+		byte[] options = new byte[26];
+		System.arraycopy(DHCPMessage.makeMagicCookie()
+				, 0, options, 0, 4);
 		System.arraycopy(DHCPMessage.makeMessageTypeOption(DHCPMessageType.DHCPREQUEST)
-				, 0, options, 0, 3);
+				, 0, options, 4, 3);
 		System.arraycopy(DHCPMessage.makeMessageIDOption(50, message.getYourIP())
-				, 0, options, 3, 6);
-		System.arraycopy(DHCPMessage.makeMessageLeaseTimeOption(10000), 0, options, 9, 6); //TODO: hier toegevoegd, 1000 leasetime voorlopig hardcoded
+				, 0, options, 7, 6);
+		System.arraycopy(DHCPMessage.makeMessageLeaseTimeOption(10000), 0, options, 13, 6); //TODO: hier toegevoegd, 1000 leasetime voorlopig hardcoded
 		System.arraycopy(DHCPMessage.makeMessageIDOption(54, message.getServerIP())
-				, 0, options, 15, 6);
-		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 21, 1);	
+				, 0, options, 19, 6);
+		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 25, 1);	
 		
 		DHCPMessage requestMessage = new DHCPMessage(Utils.toBytes(1, 1), Utils.toBytes(1, 1), Utils.toBytes(6, 1), Utils.toBytes(0, 1), 
 				message.getTransactionID(), Utils.toBytes(sec, 2), Utils.toBytes(0, 2), Utils.toBytes(0), new byte[4], message.getServerIP(), 
@@ -162,16 +168,18 @@ public class DHCPFunctions{
 		//Options	var
 		int sec = 0;
 		
-		byte[] options = new byte[22];
+		byte[] options = new byte[26];
+		System.arraycopy(DHCPMessage.makeMagicCookie()
+				, 0, options, 0, 4);
 		System.arraycopy(DHCPMessage.makeMessageTypeOption(DHCPMessageType.DHCPREQUEST)
-				, 0, options, 0, 3);
+				, 0, options, 4, 3);
 		//System.arraycopy(DHCPMessage.makeMessageIDOption(50, message.getYourIP()) 
 		System.arraycopy(DHCPMessage.makeMessageIDOption(50, message.getClientHardwareAddress()) 
-				, 0, options, 3, 6);
-		System.arraycopy(DHCPMessage.makeMessageLeaseTimeOption(10000), 0, options, 9, 6); //TODO: hier toegevoegd, 1000 leasetime voorlopig hardcoded
+				, 0, options, 7, 6);
+		System.arraycopy(DHCPMessage.makeMessageLeaseTimeOption(10000), 0, options, 13, 6); //TODO: hier toegevoegd, 1000 leasetime voorlopig hardcoded
 		System.arraycopy(DHCPMessage.makeMessageIDOption(54, message.getServerIP())
-				, 0, options, 15, 6);
-		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 21, 1);	
+				, 0, options, 19, 6);
+		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 25, 1);	
 		
 		DHCPMessage extendedRequestMessage = new DHCPMessage(Utils.toBytes(1, 1), Utils.toBytes(1, 1), Utils.toBytes(6, 1), Utils.toBytes(0, 1), 
 				message.getTransactionID(), Utils.toBytes(sec, 2), Utils.toBytes(0, 2), Utils.toBytes(0), new byte[4], message.getServerIP(), 
@@ -207,14 +215,16 @@ public class DHCPFunctions{
 		int sec = 0;
 		byte[] CHA = message.getClientHardwareAddress();
 		
-		byte[] options = new byte[16];
+		byte[] options = new byte[20];
+		System.arraycopy(DHCPMessage.makeMagicCookie()
+				, 0, options, 0, 4);
 		System.arraycopy(DHCPMessage.makeMessageTypeOption(DHCPMessageType.DHCPACK)
-				, 0, options, 0, 3);
+				, 0, options, 4, 3);
 		System.arraycopy(DHCPMessage.makeMessageLeaseTimeOption(IPLeaseTime)
-				, 0, options, 3, 6);
+				, 0, options, 7, 6);
 		System.arraycopy(DHCPMessage.makeMessageIDOption(54, message.getServerIP()) //TODO: wrs niet getServerIP()??
-				, 0, options, 9, 6);
-		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 15, 1);
+				, 0, options, 13, 6);
+		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 19, 1);
 		
 		DHCPMessage acknowledgeMessage = new DHCPMessage(Utils.toBytes(2, 1), Utils.toBytes(1, 1), Utils.toBytes(6, 1), Utils.toBytes(0, 1), 
 				message.getTransactionID(), Utils.toBytes(sec, 2), Utils.toBytes(-32768, 2), Utils.toBytes(0), yourIP.getAddress(), socket.getLocalAddress().getAddress(), 
@@ -248,12 +258,14 @@ public class DHCPFunctions{
 		int sec = 0;
 		byte[] CHA = message.getClientHardwareAddress();
 		
-		byte[] options = new byte[10];
+		byte[] options = new byte[14];
+		System.arraycopy(DHCPMessage.makeMagicCookie()
+				, 0, options, 0, 4);
 		System.arraycopy(DHCPMessage.makeMessageTypeOption(DHCPMessageType.DHCPNAK)
-				, 0, options, 0, 3);
+				, 0, options, 4, 3);
 		System.arraycopy(DHCPMessage.makeMessageIDOption(54, message.getServerIP()) //TODO: wrs niet getServerIP()??
-				, 0, options, 3, 6);
-		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 9, 1);
+				, 0, options, 7, 6);
+		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 13, 1);
 		
 		DHCPMessage negativeAcknowledgeMessage = new DHCPMessage(Utils.toBytes(2, 1), Utils.toBytes(1, 1), Utils.toBytes(6, 1), Utils.toBytes(0, 1), 
 				message.getTransactionID(), Utils.toBytes(sec, 2), Utils.toBytes(-32768, 2), Utils.toBytes(0), yourIP.getAddress(), socket.getLocalAddress().getAddress(), 
@@ -276,7 +288,7 @@ public class DHCPFunctions{
 	public static void broadcastMessage(DatagramSocket socket, DHCPMessage message, int deliveryPort){
 		try {
 			byte[] msg = message.makeMessage();
-			InetAddress broadcast = InetAddress.getByName("255.255.255.255"); // 255.255.255.255		10.33.14.246
+			InetAddress broadcast = InetAddress.getByName("10.33.14.246"); // 255.255.255.255		10.33.14.246
 			DatagramPacket sendPacket = new DatagramPacket(msg, msg.length, broadcast, deliveryPort);
 			socket.send(sendPacket);
 		} catch (Exception e) {

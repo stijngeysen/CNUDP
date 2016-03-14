@@ -235,8 +235,8 @@ public class DHCPMessage {
 	public byte[] getMessageOption(int option){
 		byte[] b = new byte[1];
 		byte[] result = null;
-		options = this.getOptions(); //TODO: subtract magic cookie (eerste 4 bytes)
-		int i=0;
+		options = this.getOptions(); // -> subtract magic cookie (eerste 4 bytes)
+		int i=4; //we beginnen bij de 5e byte om de magic cookie over te slagen
 		while (i < options.length) {
 			b[0] = options[i];
 			byte[] l = new byte[1];
