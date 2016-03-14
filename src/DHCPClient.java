@@ -109,7 +109,7 @@ class DHCPClient
 				System.out.print("options hex: ");
 				System.out.println(Utils.toHexString(message.getOptions()));
 				int IPLeaseTime = Utils.fromBytes(message.getMessageOption(51)); //TODO: hier loopt het ook al mis als dit voor de 2e keer wordt gerund
-				TimeUnit.SECONDS.sleep(IPLeaseTime/2);
+				TimeUnit.SECONDS.sleep(10/2); //om niet te lang te moeten wachten IPLeasetime veranderd in 10 sec
 				
 				DHCPFunctions.DHCPExtendedRequest(socket, message, receivePacket);
 				
