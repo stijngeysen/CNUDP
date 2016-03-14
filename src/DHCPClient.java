@@ -128,6 +128,10 @@ class DHCPClient
 				
 				//process data
 				msg = extendedRequestPacket.getData();
+				
+				System.out.println("HEX CODE");
+				System.out.println(Utils.toHexString(message.makeMessage()));
+				System.out.println();
 				message = new DHCPMessage(msg);
 				if (Utils.fromBytes(message.getMessageOption(53)) != 5) {
 					System.out.println("ERROR: Negative acknowledge received.");
