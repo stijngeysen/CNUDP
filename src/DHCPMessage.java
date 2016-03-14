@@ -211,7 +211,7 @@ public class DHCPMessage {
 		return msg;		
 	}
 	
-	public static Object makeMessageLeaseTimeOption(int IPLeaseTime) {
+	public static byte[] makeMessageLeaseTimeOption(int IPLeaseTime) {
 		byte[] msg = new byte[6];
 		System.arraycopy(Utils.toBytes(51, 1), 0, msg, 0, 1);
 		System.arraycopy(Utils.toBytes(4, 1), 0, msg, 1, 1);

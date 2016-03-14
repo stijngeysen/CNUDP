@@ -18,7 +18,7 @@ public enum DHCPMessageType
 		return value;
 	}
 
-	public byte[] getBytes() { //TODO
+	public byte[] getBytes() {
 		byte[] msg = new byte[4];
 		System.arraycopy(Utils.toBytes(53, 1), 0, msg, 0, 1);
 		System.arraycopy(Utils.toBytes(1, 1), 0, msg, 1, 1);

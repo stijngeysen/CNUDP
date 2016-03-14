@@ -42,19 +42,25 @@ public class DHCPRespond extends Thread{
 		switch(Utils.fromBytes(message.getMessageOption(53))) {
 				case 1: //message was a Discover message, we will reply with an offer
 					byte[] YI = this.usedIPs.askIP();
-					DHCPFunctions.DHCPOffer(socket, message, packet, InetAddress.getByAddress(YI), 5);
+					DHCPFunctions.DHCPOffer(socket, message, packet, InetAddress.getByAddress(YI), 5); //5 is de hardcoded leasetime
 					break;
 				case 2: //received an offer (from an other server) or wrong messagetype from client so do nothing
 					break;
 				case 3: //received a request from a client, reply with an ACK if IP is not in use, with an NAk if IP is in use
-					if (message.getMessageOption(54) != null) {
+					//Distinguish between extend Request and normal request (for new IP)
+					//extend Request => CHA = Requested IP (optie 50)
+					
+					//new IP
+					if (message.getMessageOption(50) != message.getClientHardwareAddress()) { //oorspronkelijk optie 54 != null (ServerID), ik denk dat het 50 (Requested IP) moet zijn
 						byte[] IP = this.usedIPs.askIP();
-						DHCPFunctions.DHCPAck(socket, message, packet, InetAddress.getByAddress(IP), 5);
+						DHCPFunctions.DHCPAck(socket, message, packet, InetAddress.getByAddress(IP), 5); //5 is de hardcoded leasetime
 					}
+					//extend
 					else {
-						byte[] IP = message.getYourIP();
-						if (this.usedIPs.extendIP(IP)) {
-							DHCPFunctions.DHCPAck(socket, message, packet, InetAddress.getByAddress(IP), 5);
+						byte[] IP = message.getMessageOption(50); //Ik denk dat hier requested IP moet
+						System.out.println("TODO IP: " + Utils.fromBytes(IP));
+						if (this.usedIPs.extendIP(IP)) { //TODO: extendIP wordt hier gebruikt
+							DHCPFunctions.DHCPAck(socket, message, packet, InetAddress.getByAddress(IP), 5); //5 is de hardcoded leasetime
 						} else {
 							DHCPFunctions.DHCPNak(socket, message, packet, InetAddress.getByAddress(IP));
 						}
