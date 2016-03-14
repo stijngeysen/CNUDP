@@ -195,6 +195,13 @@ public class DHCPMessage {
 	}
 	
 	
+	public static byte[] makeMagicCookie(){ //HEX: 63,82,53,63 DEC: 99.130.83.99 INT: 1669485411
+		byte[] msg = Utils.toBytes(1669485411, 4);
+		System.out.println("Magic Cookie HEX Format: ");
+		System.out.println(Utils.toHexString(msg));
+		return msg;
+	}
+	
 	public static byte[] makeMessageTypeOption(DHCPMessageType messageType){
 		byte[] msg = new byte[3];
 		System.arraycopy(Utils.toBytes(53, 1), 0, msg, 0, 1);
@@ -228,7 +235,7 @@ public class DHCPMessage {
 	public byte[] getMessageOption(int option){
 		byte[] b = new byte[1];
 		byte[] result = null;
-		options = this.getOptions();
+		options = this.getOptions(); //TODO: subtract magic cookie (eerste 4 bytes)
 		int i=0;
 		while (i < options.length) {
 			b[0] = options[i];
