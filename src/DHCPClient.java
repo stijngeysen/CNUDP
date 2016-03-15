@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 class DHCPClient
 {
 	//Client Port (Server -> client communication, normally 68)
-	protected static int port = 1235; 
+	protected static int port = 1236; 
 	//packet length (min 236 + options)
 	static int lengte = 512;
 	
