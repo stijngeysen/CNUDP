@@ -145,11 +145,14 @@ public class DHCPFunctions{
 	
 	public static void DHCPExtendedRequest(DatagramSocket socket, DHCPMessage message, DatagramPacket packet) {
 		//TODO:
+		// UIT ietf.org:
 		// Client Hardware Address in requested Ip address (optie 50)
 		// ciaddr (CIP) moet leeg zijn
 		// client ID moet zelfde zijn als bij process waarbij IP bekomen werd als gebruikt
 		// => het enige verschil met regular Request dat ik zie is dat requeste IP == CHA 
 		//		(dus mogelijk kunnen deze 2 functies samengevoegd worden, maar ik hou ze nog even apart om het testen te vereenvoudigen)
+		// maar dit werkt niet, werkt wel als CHA vervangen door YourIP, maar dan is deze functie net hetzelfde als de normale Request.
+		// Geen idee of dit ook de bedoeling is
 		
 		//op:		1 (request) (1 = bootrequest, 2 = bootreply)
 		//htype: 	1 (ethernet) (hardware address type)
@@ -287,7 +290,7 @@ public class DHCPFunctions{
 	public static void broadcastMessage(DatagramSocket socket, DHCPMessage message, int deliveryPort){
 		try {
 			byte[] msg = message.makeMessage();
-			InetAddress broadcast = InetAddress.getByName("10.33.14.246"); // 255.255.255.255		10.33.14.246
+			InetAddress broadcast = InetAddress.getByName("255.255.255.255"); // 255.255.255.255		10.33.14.246
 			DatagramPacket sendPacket = new DatagramPacket(msg, msg.length, broadcast, deliveryPort);
 			socket.send(sendPacket);
 		} catch (Exception e) {

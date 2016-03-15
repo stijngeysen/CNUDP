@@ -48,22 +48,20 @@ public class DHCPRespond extends Thread{
 					break;
 				case 3: //received a request from a client, reply with an ACK if IP is not in use, with an NAk if IP is in use
 					//Distinguish between extend Request and normal request (for new IP)
-					//extend Request => CHA = Requested IP (optie 50)
-					
-					//new IP
-					if (message.getMessageOption(50) != message.getClientHardwareAddress()) { //oorspronkelijk optie 54 != null (ServerID), ik denk dat het 50 (Requested IP) moet zijn
+					//extend Request => YourIP = Requested IP (optie 50)
+					if (message.getMessageOption(50) != message.getYourIP()){
 						byte[] IP = this.usedIPs.askIP();
-						DHCPFunctions.DHCPAck(socket, message, packet, InetAddress.getByAddress(IP), 5); //5 is de hardcoded leasetime
+						DHCPFunctions.DHCPAck(socket, message, packet, InetAddress.getByAddress(IP), 5);
 					}
-					//extend
-					else {
-						byte[] IP = message.getMessageOption(50); //Ik denk dat hier requested IP moet
-						System.out.println("TODO IP: " + Utils.fromBytes(IP));
-						if (this.usedIPs.extendIP(IP)) { //TODO: extendIP wordt hier gebruikt
-							DHCPFunctions.DHCPAck(socket, message, packet, InetAddress.getByAddress(IP), 5); //5 is de hardcoded leasetime
-						} else {
+					else{
+						byte[] IP = message.getMessageOption(50); //RequestedIP option
+						if (this.usedIPs.extendIP(IP)) {
+							DHCPFunctions.DHCPAck(socket, message, packet, InetAddress.getByAddress(IP), 5);
+						}
+						else{
 							DHCPFunctions.DHCPNak(socket, message, packet, InetAddress.getByAddress(IP));
 						}
+							
 					}
 					break;
 				case 5: //received an ACK message (from an other server) or wrong messagetype from client so do nothing
