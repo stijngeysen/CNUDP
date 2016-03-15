@@ -290,7 +290,7 @@ public class DHCPFunctions{
 	public static void broadcastMessage(DatagramSocket socket, DHCPMessage message, int deliveryPort){
 		try {
 			byte[] msg = message.makeMessage();
-			InetAddress broadcast = InetAddress.getByName("10.33.14.246"); // 255.255.255.255		10.33.14.246
+			InetAddress broadcast = InetAddress.getByName("255.255.255.255"); // 255.255.255.255		10.33.14.246
 			DatagramPacket sendPacket = new DatagramPacket(msg, msg.length, broadcast, deliveryPort);
 			socket.send(sendPacket);
 		} catch (Exception e) {
