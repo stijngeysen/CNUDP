@@ -176,15 +176,22 @@ public class DHCPFunctions{
 				, 0, options, 0, 4);
 		System.arraycopy(DHCPMessage.makeMessageTypeOption(DHCPMessageType.DHCPREQUEST)
 				, 0, options, 4, 3);
+		try {
+			System.out.println("getYourIP: " +  InetAddress.getByAddress(message.getYourIP()));
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		System.arraycopy(DHCPMessage.makeMessageIDOption(50, message.getYourIP()) 
 				, 0, options, 7, 6);
 		System.arraycopy(DHCPMessage.makeMessageLeaseTimeOption(10000), 0, options, 13, 6); //TODO: hier toegevoegd, 1000 leasetime voorlopig hardcoded
 		System.arraycopy(DHCPMessage.makeMessageIDOption(54, message.getServerIP())
 				, 0, options, 19, 6);
-		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 25, 1);	
+		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 25, 1);
+		System.out.println("option length: " + options.length);
 		
 		DHCPMessage extendedRequestMessage = new DHCPMessage(Utils.toBytes(1, 1), Utils.toBytes(1, 1), Utils.toBytes(6, 1), Utils.toBytes(0, 1), 
-				message.getTransactionID(), Utils.toBytes(sec, 2), Utils.toBytes(0, 2), message.getClientIP(), new byte[4], message.getServerIP(), 
+				message.getTransactionID(), Utils.toBytes(sec, 2), Utils.toBytes(0, 2), message.getYourIP(), new byte[4], message.getServerIP(), 
 				new byte[4], message.getClientHardwareAddress(), message.getServerHostName(), new byte[128], options);
 
 		if (message.getFlags()[0] == 1) {
@@ -193,6 +200,7 @@ public class DHCPFunctions{
 			unicastMessage(socket, extendedRequestMessage, packet.getPort(), packet.getAddress());
 		}
 		System.out.println("DHCPExtendedRequest message broadcasted by me (Client)");
+		System.out.println("option send length: " + extendedRequestMessage.getOptions().length);
 		System.out.println("Option field was: ");
 		System.out.println(Utils.toHexString(extendedRequestMessage.getOptions()));
 		System.out.println("The transactionID was: " + Utils.fromBytes(extendedRequestMessage.getTransactionID()));
@@ -283,6 +291,45 @@ public class DHCPFunctions{
 	}
 
 	public static void DHCPRelease() { //TODO
+		//op:		1 (request) (1 = bootrequest, 2 = bootreply)
+		//htype: 	1 (ethernet) (hardware address type)
+		//hlen:		6 (IEEE 802 MAC addresses) (hardware address length)
+		//hops:		0 (optionnaly used by relay agents)
+		//xid:		vorig transactieID
+		//sec:		0 (seconds elapsed since client began address acquisition or renewal process)
+		//flags		0x8000 (broadcast) of 0x0000 (unicast)
+		//CIP		0 (Client heeft nog geen IP)
+		//YI		byte[4] (your IP-address)
+		//SI		unicastaddress naar server
+		//GI		byte[4] (niet gebruikt door clients) (relay agent IP address)
+		//Client Hardware Address (MAC)	bv 01:23:45:67:89:ab (16 bytes)
+		//SName		byte[64] (optional server name)
+		//BootFile	byte[128]
+		//Options	var
+		int sec = 0;
+		
+		byte[] options = new byte[26];
+		System.arraycopy(DHCPMessage.makeMagicCookie()
+				, 0, options, 0, 4);
+		System.arraycopy(DHCPMessage.makeMessageTypeOption(DHCPMessageType.DHCPREQUEST)
+				, 0, options, 4, 3);
+		System.arraycopy(DHCPMessage.makeMessageIDOption(50, message.getYourIP())
+				, 0, options, 7, 6);
+		System.arraycopy(DHCPMessage.makeMessageLeaseTimeOption(10000), 0, options, 13, 6); //TODO: hier toegevoegd, 1000 leasetime voorlopig hardcoded
+		System.arraycopy(DHCPMessage.makeMessageIDOption(54, message.getServerIP())
+				, 0, options, 19, 6);
+		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 25, 1);	
+		
+		DHCPMessage requestMessage = new DHCPMessage(Utils.toBytes(1, 1), Utils.toBytes(1, 1), Utils.toBytes(6, 1), Utils.toBytes(0, 1), 
+				message.getTransactionID(), Utils.toBytes(sec, 2), Utils.toBytes(0, 2), Utils.toBytes(0), new byte[4], message.getServerIP(), 
+				new byte[4], message.getClientHardwareAddress(), message.getServerHostName(), new byte[128], options);
+
+		//message is the received message, not the newly constructed one
+		if (message.getFlags()[0] == 1) {
+			broadcastMessage(socket, requestMessage, packet.getPort());
+		} else {
+			unicastMessage(socket, requestMessage, packet.getPort(), packet.getAddress());
+		}	
 		System.out.println("DHCPRelease message unicasted by me (Client)");
 		System.out.println("Not yet implemented");
 	}
@@ -290,7 +337,7 @@ public class DHCPFunctions{
 	public static void broadcastMessage(DatagramSocket socket, DHCPMessage message, int deliveryPort){
 		try {
 			byte[] msg = message.makeMessage();
-			InetAddress broadcast = InetAddress.getByName("255.255.255.255"); // 255.255.255.255		10.33.14.246
+			InetAddress broadcast = InetAddress.getByName("0.0.0.0"); // 255.255.255.255		10.33.14.246
 			DatagramPacket sendPacket = new DatagramPacket(msg, msg.length, broadcast, deliveryPort);
 			socket.send(sendPacket);
 		} catch (Exception e) {

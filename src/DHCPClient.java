@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 class DHCPClient
 {
 	//Client Port (Server -> client communication, normally 68)
-	protected static int port = 1236; 
+	protected static int port = 1235; 
 	//packet length (min 236 + options)
 	static int lengte = 512;
 	
@@ -112,7 +112,7 @@ class DHCPClient
 				System.out.print("options hex: ");
 				System.out.println(Utils.toHexString(message.getOptions()));
 				int IPLeaseTime = Utils.fromBytes(message.getMessageOption(51)); //TODO: hier loopt het ook al mis als dit voor de 2e keer wordt gerund
-				TimeUnit.SECONDS.sleep(10/2); //om niet te lang te moeten wachten IPLeasetime veranderd in 10 sec
+				TimeUnit.SECONDS.sleep(5/2); //om niet te lang te moeten wachten IPLeasetime veranderd in 10 sec
 				
 				DHCPFunctions.DHCPExtendedRequest(socket, message, receivePacket);
 				
@@ -137,7 +137,6 @@ class DHCPClient
 				System.out.println();
 				message = new DHCPMessage(msg);
 				System.out.println("Your IP: " + InetAddress.getByAddress(message.getYourIP()));
-				System.out.println("LeaseTime: " + Utils.fromBytes(message.getMessageOption(51)));
 				if (Utils.fromBytes(message.getMessageOption(53)) != 5) {
 					System.out.println("ERROR: Negative acknowledge received.");
 					break;

@@ -26,7 +26,7 @@ public class DHCPServer {
     		//get the next packet
     		welcomeSocket.receive(receivePacket);
     		//Delete IP's which exist for too long
-    		
+    		//usedIPs.removeExtinctIPs(); //TODO: optimaliseren
     		//Run new Thread for Response
     		(new DHCPRespond(welcomeSocket, receivePacket, usedIPs)).start();
 		}

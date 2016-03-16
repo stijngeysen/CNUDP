@@ -49,16 +49,27 @@ public class DHCPRespond extends Thread{
 				case 3: //received a request from a client, reply with an ACK if IP is not in use, with an NAk if IP is in use
 					//Distinguish between extend Request and normal request (for new IP)
 					//extend Request => YourIP = Requested IP (optie 50)
-					if (message.getMessageOption(50) != message.getYourIP()){
-						byte[] IP = this.usedIPs.askIP();
-						DHCPFunctions.DHCPAck(socket, message, packet, InetAddress.getByAddress(IP), 5);
+					System.out.println("option 50" + Utils.fromBytes(message.getMessageOption(50)));
+					System.out.println("clientIP" + Utils.fromBytes(message.getClientIP()));
+					if (Utils.fromBytes(message.getMessageOption(50)) != Utils.fromBytes(message.getClientIP())){
+						System.out.println("New IP");
+						byte[] IP = message.getMessageOption(50);
+						if (! usedIPs.containIP(IP)) {
+							this.usedIPs.addIP(IP);
+							DHCPFunctions.DHCPAck(socket, message, packet, InetAddress.getByAddress(IP), 5);
+						}
+						else {
+							DHCPFunctions.DHCPNak(socket, message, packet, InetAddress.getByAddress(IP));
+						}
 					}
 					else{
 						byte[] IP = message.getMessageOption(50); //RequestedIP option
 						if (this.usedIPs.extendIP(IP)) {
+							System.out.println("Extend IP ack");
 							DHCPFunctions.DHCPAck(socket, message, packet, InetAddress.getByAddress(IP), 5);
 						}
 						else{
+							System.out.println("extend IP NAK");
 							DHCPFunctions.DHCPNak(socket, message, packet, InetAddress.getByAddress(IP));
 						}
 							
