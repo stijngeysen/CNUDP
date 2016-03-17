@@ -1,15 +1,51 @@
 import java.util.Arrays;
 
+/**
+ * DHCP Message
+ * Class to compose, decode and print a DHCP-message with getters and setters.
+ * 
+ * @author Geysen Stijn & Moons Marnix
+ *
+ */
 public class DHCPMessage {
-	//CONSTRUCT empty message
+	/**
+	 * DHCP Message
+	 * Construct an empty message
+	 */
 	public DHCPMessage(){
 		
 	}
 	
+	/**
+	 * DHCP Message
+	 * Decode message and links all fields.
+	 * 
+	 * @param msg
+	 */
 	public DHCPMessage(byte[] msg){
 		this.decodeMsg(msg);
 	}
 
+	/**
+	 * DHCP Message
+	 * Initializer for a DHCP-message, sets all fields.
+	 * 
+	 * @param opCode
+	 * @param hardwareType
+	 * @param hardwareAddressLength
+	 * @param hopCount
+	 * @param transactionID
+	 * @param numberOfSeconds
+	 * @param flags
+	 * @param clientIP
+	 * @param yourIP
+	 * @param serverIP
+	 * @param gatewayIP
+	 * @param clientHardwareAddress
+	 * @param serverHostName
+	 * @param bootFileName
+	 * @param options
+	 */
 	public DHCPMessage(byte[] opCode, byte[] hardwareType, byte[] hardwareAddressLength, byte[] hopCount, byte[] transactionID,
 			byte[] numberOfSeconds, byte[] flags, byte[] clientIP, byte[] yourIP, byte[] serverIP, byte[] gatewayIP, 
 			byte[] clientHardwareAddress, byte[] serverHostName, byte[] bootFileName, byte[] options){
@@ -47,6 +83,7 @@ public class DHCPMessage {
 	protected byte[] bootFileName = new byte[128];
 	protected byte[] options = new byte[312];
 	
+	// All getters and setters
 	public byte[] getOpCode() {
 		return opCode;
 	}
@@ -140,7 +177,12 @@ public class DHCPMessage {
 	
 	
 	
-	//Compose a msg
+	/**
+	 * Make Message
+	 * Compose a message using all the allready set fields.
+	 * 
+	 * @return
+	 */
 	public byte[] makeMessage(){
 		byte[] msg = new byte[236 + this.getOptions().length];
 		System.arraycopy(this.getOpCode(), 0, msg, 0, 1);
@@ -161,7 +203,12 @@ public class DHCPMessage {
 		return msg;
 	}
 	
-	//Decode a messages
+	/**
+	 * Decode Message
+	 * Get all the fields of a message and set these.
+	 * 
+	 * @param msg
+	 */
 	private void decodeMsg(byte[] msg) {
 		this.setOpCode(Arrays.copyOfRange(msg, 0, 1));	
 		this.setHardwareType(Arrays.copyOfRange(msg, 1, 2));
@@ -180,7 +227,12 @@ public class DHCPMessage {
 		this.setOptions(Arrays.copyOfRange(msg, 236, msg.length));
 	}
 	
-	//print message type
+	/**
+	 * Get Message Type
+	 * Get option 53 of the message, its type.
+	 * 
+	 * @return
+	 */
 	public byte[] getMessageType(){
 		byte[] b = new byte[1];
 		for (int i=0; i<this.getOptions().length; i++) {
@@ -194,12 +246,24 @@ public class DHCPMessage {
 		return b;
 	}
 	
-	
-	public static byte[] makeMagicCookie(){ //HEX: 63,82,53,63 DEC: 99.130.83.99 INT: 1669485411
+	/**
+	 * Make Magic Cookie
+	 * Make the initializer for the options (HEX: 63,82,53,63 DEC: 99.130.83.99 INT: 1669485411)
+	 * 
+	 * @return
+	 */
+	public static byte[] makeMagicCookie(){
 		byte[] msg = Utils.toBytes(1669485411, 4);
 		return msg;
 	}
 	
+	/**
+	 * Make Message Type Option
+	 * Set option 53 to the given DHCPMessageType.
+	 * 
+	 * @param messageType
+	 * @return
+	 */
 	public static byte[] makeMessageTypeOption(DHCPMessageType messageType){
 		byte[] msg = new byte[3];
 		System.arraycopy(Utils.toBytes(53, 1), 0, msg, 0, 1);
@@ -208,14 +272,29 @@ public class DHCPMessage {
 		return msg;		
 	}
 	
+	/**
+	 * Make Message ID Option
+	 * Set option 50 (RequestIP) or 54 (ServerIP)
+	 * 
+	 * @param option
+	 * @param address
+	 * @return
+	 */
 	public static byte[] makeMessageIDOption(int option, byte[] address){
 		byte[] msg = new byte[6];
-		System.arraycopy(Utils.toBytes(option, 1), 0, msg, 0, 1); //54 ServerIP -  50 RequestIP
+		System.arraycopy(Utils.toBytes(option, 1), 0, msg, 0, 1);
 		System.arraycopy(Utils.toBytes(4, 1), 0, msg, 1, 1);
 		System.arraycopy(address, 0, msg, 2, 4);
 		return msg;		
 	}
 	
+	/**
+	 * Make Message Lease Time Option
+	 * 
+	 * 
+	 * @param IPLeaseTime
+	 * @return
+	 */
 	public static byte[] makeMessageLeaseTimeOption(int IPLeaseTime) {
 		byte[] msg = new byte[6];
 		System.arraycopy(Utils.toBytes(51, 1), 0, msg, 0, 1);

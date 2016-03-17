@@ -2,6 +2,13 @@ import java.net.*;
 //import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * DHCP Client
+ * Client which sends discover, request, extended requests and release messages.
+ * 
+ * @author Geysen Stijn & Moons Marnix
+ *
+ */
 class DHCPClient
 {
 	//Client Port (Server -> client communication, normally 68)

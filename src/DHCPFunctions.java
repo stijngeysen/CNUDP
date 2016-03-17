@@ -161,7 +161,7 @@ public class DHCPFunctions{
 	 * 		- BootFile	byte[128]
 	 * 		- Options	50, 53, 54
 	 * Option 50: 'client's IP address'
-	 * Option 53: DHCPOFFER
+	 * Option 53: DHCPREQUEST
 	 * Option 54: set serverIP
 	 * 
 	 * @param socket
@@ -226,7 +226,7 @@ public class DHCPFunctions{
 	 * 		- BootFile	byte[128]
 	 * 		- Options	51, 53, 54
 	 * Option 51: set lease time
-	 * Option 53: DHCPOFFER
+	 * Option 53: DHCPACK
 	 * Option 54: set serverIP
 	 * 
 	 * @param socket
@@ -265,6 +265,23 @@ public class DHCPFunctions{
 	/**
 	 * DHCP Negative Acknowledge
 	 * Server to client indicating client's notion of network address is incorrect (e.g., client has moved to new subnet) or client's lease as expired
+	 * 		- op		2 (reply)
+	 * 		- htype		1 for 10mb ethernet
+	 * 		- hlen		6 for 10mb ethernet
+	 * 		- hops		0
+	 * 		- xid		previous transactionID
+	 * 		- sec		0
+	 * 		- flags		-32768 (broadcast)
+	 * 		- CIP		client IP address
+	 * 		- YI		'client's IP'
+	 * 		- SI		Server's IP or 255.255.255.255 for broadcast
+	 * 		- GI		byte[4]
+	 * 		- CHA		client's CHA
+	 * 		- SName		byte[64]
+	 * 		- BootFile	byte[128]
+	 * 		- Options	53, 54
+	 * Option 53: DHCPNAK
+	 * Option 54: set serverIP
 	 * 
 	 * @param socket
 	 * @param message
@@ -273,46 +290,29 @@ public class DHCPFunctions{
 	 * @param clientIP
 	 */
 	public static void DHCPNak(DatagramSocket socket, DHCPMessage message, DatagramPacket packet, InetAddress yourIP, byte[] clientIP) {
-		//op:		2 (reply)
-		//htype: 	1 (ethernet)
-		//hlen:		6 (IEEE 802 MAC addresses)
-		//hops:		0
-		//xid:		vorig transactieID
-		//sec:		0
-		//flags		-32768 (2's complement decimaal voor 1000 0000 0000 0000 , de broadcast flag)
-		//CIP		0 (Client heeft nog geen IP) or ClientIP (for example for Nak by extend Request)
-		//YI		server's IP
-		//SI		server's IP of 255.255.255.255
-		//GI		byte[4]
-		//Client Hardware Address (MAC)	bv 01:23:45:67:89:ab (16 bytes)
-		//SName		byte[64]
-		//BootFile	byte[128]
-		//Options
 		int sec = 0;
 		byte[] CHA = message.getClientHardwareAddress();
 		
 		byte[] options = new byte[14];
-		//magic cookie
 		System.arraycopy(DHCPMessage.makeMagicCookie()
 				, 0, options, 0, 4);
-		//53: messageType
 		System.arraycopy(DHCPMessage.makeMessageTypeOption(DHCPMessageType.DHCPNAK)
 				, 0, options, 4, 3);
-		//54: serverID
 		System.arraycopy(DHCPMessage.makeMessageIDOption(54, message.getServerIP())
 				, 0, options, 7, 6);
-		//255: end option
 		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 13, 1);
 		
 		DHCPMessage negativeAcknowledgeMessage = new DHCPMessage(Utils.toBytes(2, 1), Utils.toBytes(1, 1), Utils.toBytes(6, 1), Utils.toBytes(0, 1), 
 				message.getTransactionID(), Utils.toBytes(sec, 2), Utils.toBytes(-32768, 2), clientIP, yourIP.getAddress(), socket.getLocalAddress().getAddress(), 
 				new byte[4], CHA, new byte[64], new byte[128], options);
+		
 		if (message.getFlags()[0] == 1) { //1e bit van flags = 1 --> broadcast
 			broadcastMessage(socket, negativeAcknowledgeMessage, packet.getPort()); //normaal is 68 UDP poort voor DHCP client
+			System.out.println("DHCPNak message broadcasted by me (Server)");
 		} else { // 1e bit van flags = 0 --> unicast
 			unicastMessage(socket, negativeAcknowledgeMessage, packet.getPort(), packet.getAddress()); //normaal is 68 UDP poort voor DHCP client
+			System.out.println("DHCPNak message unicasted by me (Server)");
 		}
-		System.out.println("DHCPNak message unicasted by me (Server)");
 //		System.out.println("Option field was: ");
 //		System.out.println(Utils.toHexString(negativeAcknowledgeMessage.getOptions()));
 	}
@@ -320,41 +320,38 @@ public class DHCPFunctions{
 	/**
 	 * DHCP Release
 	 * Client to server relinquishing network address and cancelling remaining lease.
+	 * 		- op		1 (request)
+	 * 		- htype		1 for 10mb ethernet
+	 * 		- hlen		6 for 10mb ethernet
+	 * 		- hops		0
+	 * 		- xid		previous transactionID
+	 * 		- sec		0
+	 * 		- flags		0 (unicast)
+	 * 		- CIP		client IP address
+	 * 		- YI		byte[4]
+	 * 		- SI		Server's IP or 255.255.255.255 for broadcast
+	 * 		- GI		byte[4]
+	 * 		- CHA		client's CHA
+	 * 		- SName		byte[64]
+	 * 		- BootFile	byte[128]
+	 * 		- Options	53, 54
+	 * Option 53: DHCPRELEASE
+	 * Option 54: set serverIP
 	 * 
 	 * @param socket
 	 * @param message
 	 * @param packet
 	 */
 	public static void DHCPRelease(DatagramSocket socket, DHCPMessage message, DatagramPacket packet) {
-		//op:		1 (request) (1 = bootrequest, 2 = bootreply)
-		//htype: 	1 (ethernet) (hardware address type)
-		//hlen:		6 (IEEE 802 MAC addresses) (hardware address length)
-		//hops:		0 (optionnaly used by relay agents)
-		//xid:		previous transactieID
-		//sec:		0 (seconds elapsed since client began address acquisition or renewal process)
-		//flags		0x0000 (unicast)
-		//CIP		ClientIp
-		//YI		byte[4] (your IP-address)
-		//SI		unicastaddress naar server
-		//GI		byte[4] (niet gebruikt door clients) (relay agent IP address)
-		//Client Hardware Address (MAC)	bv 01:23:45:67:89:ab (16 bytes)
-		//SName		byte[64] (optional server name)
-		//BootFile	byte[128]
-		//Options	var
 		int sec = 0;
 		
-		//Compose the options packet
 		byte[] options = new byte[14];
-		//magic Cookie
 		System.arraycopy(DHCPMessage.makeMagicCookie()
 				, 0, options, 0, 4);
-		//53: MessageType
 		System.arraycopy(DHCPMessage.makeMessageTypeOption(DHCPMessageType.DHCPRELEASE)
 				, 0, options, 4, 3);
-		//54: ServerID
 		System.arraycopy(DHCPMessage.makeMessageIDOption(54, message.getServerIP())
 				, 0, options, 7, 6);
-		//255: end option
 		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 13, 1);	
 		
 		DHCPMessage releaseMessage = new DHCPMessage(Utils.toBytes(1, 1), Utils.toBytes(1, 1), Utils.toBytes(6, 1), Utils.toBytes(0, 1), 
@@ -368,6 +365,14 @@ public class DHCPFunctions{
 //		System.out.println(Utils.toHexString(releaseMessage.makeMessage()));
 	}
 
+	/**
+	 * Broadcast Message
+	 * Broadcast not allowed in labs, so it is replaced by a unicast.
+	 * 
+	 * @param socket
+	 * @param message
+	 * @param deliveryPort
+	 */
 	public static void broadcastMessage(DatagramSocket socket, DHCPMessage message, int deliveryPort){
 		try {
 			InetAddress broadcast = InetAddress.getByName("0.0.0.0"); // 255.255.255.255		10.33.14.246     0.0.0.0
@@ -377,6 +382,15 @@ public class DHCPFunctions{
 		}
 	}
 	
+	/**
+	 * Unicast Message
+	 * 
+	 * 
+	 * @param socket
+	 * @param message
+	 * @param port
+	 * @param address
+	 */
 	public static void unicastMessage(DatagramSocket socket, DHCPMessage message, int port, InetAddress address) {
 		try {
 			byte[] msg = message.makeMessage();
