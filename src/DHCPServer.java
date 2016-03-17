@@ -6,7 +6,7 @@ import java.net.DatagramSocket;
 public class DHCPServer {
 	//port of the server (normally 67 for DHCP)
 	static int port = 1234;
-	//packet length (min 236 + options)
+	//max packet length (min 236 + options)
 	static int lengte = 512;
 	//used IP's
 	static UsedIPs usedIPs = new UsedIPs();
@@ -25,8 +25,6 @@ public class DHCPServer {
     		DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
     		//get the next packet
     		welcomeSocket.receive(receivePacket);
-    		//Delete IP's which exist for too long
-    		//usedIPs.removeExtinctIPs(); //TODO: optimaliseren
     		//Run new Thread for Response
     		(new DHCPRespond(welcomeSocket, receivePacket, usedIPs)).start();
 		}

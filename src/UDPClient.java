@@ -53,18 +53,4 @@ class UDPClient
       //Client is done, so close the connections
       clientSocket.close();
    }
-   
-   public void DHCPDiscover() throws IOException {
-		byte[] sendData = new byte[lengte];
-		InetAddress broadcast;
-		DatagramSocket welcomeSocket = new DatagramSocket(port);
-		try {
-			broadcast = InetAddress.getByName("255.255.255.255");
-			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, broadcast, 68);
-			welcomeSocket.send(sendPacket);
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-		welcomeSocket.close();
-	}
 }

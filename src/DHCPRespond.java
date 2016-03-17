@@ -9,6 +9,9 @@ public class DHCPRespond extends Thread{
     DatagramSocket socket = null;
     DatagramPacket packet = null;
     UsedIPs usedIPs = null;
+    
+	//leaseTime (has to be the same as the leasetime in DHCPFunctions.java
+	static int leaseTime = 5;
 	
     //Constructor
     public DHCPRespond(DatagramSocket socket, DatagramPacket packet, UsedIPs usedIPs){
@@ -21,6 +24,8 @@ public class DHCPRespond extends Thread{
 	public void run() {
 		try {
 			response();
+    		//Delete IP's which exist for too long
+    		usedIPs.removeExtinctIPs(leaseTime); //TODO: optimaliseren
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -31,46 +36,37 @@ public class DHCPRespond extends Thread{
 		byte[] msg = packet.getData();
 		DHCPMessage message = new DHCPMessage(msg);
 		
-		//For Server
-		System.out.println("Transaction ID: " + Utils.fromBytes(message.getTransactionID()));
-		System.out.println("Hardware Address Length: " + Utils.fromBytes(message.getHardwareAddressLength()));
+		//Print text to console Server
 		System.out.println("Client IP: " + InetAddress.getByAddress(message.getClientIP()));
-		System.out.println("Server IP:  " + socket.getLocalAddress());
-		System.out.println("Client port: " + packet.getPort());
-		
+
 		//For Client
-		switch(Utils.fromBytes(message.getMessageOption(53))) {
+		switch(Utils.fromBytes(message.getMessageOption(53))) { //reply according to the received messageType
 				case 1: //message was a Discover message, we will reply with an offer
 					byte[] YI = this.usedIPs.askIP();
-					DHCPFunctions.DHCPOffer(socket, message, packet, InetAddress.getByAddress(YI), 5); //5 is de hardcoded leasetime
+					DHCPFunctions.DHCPOffer(socket, message, packet, InetAddress.getByAddress(YI));
 					break;
 				case 2: //received an offer (from an other server) or wrong messagetype from client so do nothing
 					break;
 				case 3: //received a request from a client, reply with an ACK if IP is not in use, with an NAk if IP is in use
 					//Distinguish between extend Request and normal request (for new IP)
-					//extend Request => YourIP = Requested IP (optie 50)
-					System.out.println("option 50" + Utils.fromBytes(message.getMessageOption(50)));
-					System.out.println("clientIP" + Utils.fromBytes(message.getClientIP()));
-					if (Utils.fromBytes(message.getMessageOption(50)) != Utils.fromBytes(message.getClientIP())){
-						System.out.println("New IP");
+					//extend Request => ClientIP = Requested IP (optie 50)
+					if (Utils.fromBytes(message.getMessageOption(50)) != Utils.fromBytes(message.getClientIP())){ //new Request
 						byte[] IP = message.getMessageOption(50);
-						if (! usedIPs.containIP(IP)) {
+						if (! usedIPs.containIP(IP)) { //Check if requested IP already in use and reply with ack/nak
 							this.usedIPs.addIP(IP);
-							DHCPFunctions.DHCPAck(socket, message, packet, InetAddress.getByAddress(IP), 5);
+							DHCPFunctions.DHCPAck(socket, message, packet, InetAddress.getByAddress(IP), new byte[4]);
 						}
 						else {
-							DHCPFunctions.DHCPNak(socket, message, packet, InetAddress.getByAddress(IP));
+							DHCPFunctions.DHCPNak(socket, message, packet, InetAddress.getByAddress(IP), new byte[4]);
 						}
 					}
-					else{
+					else{ //extend request
 						byte[] IP = message.getMessageOption(50); //RequestedIP option
-						if (this.usedIPs.extendIP(IP)) {
-							System.out.println("Extend IP ack");
-							DHCPFunctions.DHCPAck(socket, message, packet, InetAddress.getByAddress(IP), 5);
+						if (this.usedIPs.extendIP(IP)) { //extend request approved
+							DHCPFunctions.DHCPAck(socket, message, packet, InetAddress.getByAddress(IP), message.getClientIP());
 						}
-						else{
-							System.out.println("extend IP NAK");
-							DHCPFunctions.DHCPNak(socket, message, packet, InetAddress.getByAddress(IP));
+						else{ //extend request not approved
+							DHCPFunctions.DHCPNak(socket, message, packet, InetAddress.getByAddress(IP), message.getClientIP());
 						}
 							
 					}
@@ -79,8 +75,8 @@ public class DHCPRespond extends Thread{
 					break;
 				case 6: //received an NACK message (from an other server) or wrong messagetype from client so do nothing
 					break;
-				case 7: //received a Relase message
-					//TODO: release processen
+				case 7: //received a Release message
+					this.usedIPs.removeIP(message.getClientIP());
 		}
 	}
 	
