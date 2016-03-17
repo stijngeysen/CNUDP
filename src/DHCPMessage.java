@@ -290,7 +290,7 @@ public class DHCPMessage {
 	
 	/**
 	 * Make Message Lease Time Option
-	 * 
+	 * Set option 51 to the given IP lease time.
 	 * 
 	 * @param IPLeaseTime
 	 * @return
@@ -303,12 +303,25 @@ public class DHCPMessage {
 		return msg;
 	}
 	
+	/**
+	 * Make End Option
+	 * The options need to end on HEX:FF (or INT:255)
+	 * 
+	 * @return
+	 */
 	public static byte[] makeEndOption(){
 		byte[] msg = new byte[1];
 		System.arraycopy(Utils.toBytes(255, 1), 0, msg, 0, 1);
 		return msg;
 	}
 	
+	/**
+	 * Get Message Option
+	 * Return the requested option, return null if the option is not present.
+	 * 
+	 * @param option
+	 * @return
+	 */
 	public byte[] getMessageOption(int option){
 		byte[] b = new byte[1];
 		byte[] result = null;

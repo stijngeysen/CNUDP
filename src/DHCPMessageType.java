@@ -1,11 +1,17 @@
-
+/**
+ * DHCP Message Type
+ * Enumerator to represent the message type and retreive information like its bytes or type (given bytes).
+ * 
+ * @author Geysen Stijn & Moons Marnix
+ *
+ */
 public enum DHCPMessageType 
 {   DHCPDISCOVER(1),		//a client broadcasts to locate servers
 	DHCPOFFER(2),	    	//a server offers an IP address to the device
-	DHCPREQUEST(3),		//client accepts offers from DHCP server
-	DHCPACK(5),			//server to client + committed IP address
-	DHCPNAK(6),			//server to client to state net address incorrect
-	DHCPRELEASE(7),		//graceful shutdown from client to Server
+	DHCPREQUEST(3),			//client accepts offers from DHCP server
+	DHCPACK(5),				//server to client + committed IP address
+	DHCPNAK(6),				//server to client to state net address incorrect
+	DHCPRELEASE(7),			//graceful shutdown from client to Server
 	INVALID(8);
 	
 	private final int value;
@@ -18,6 +24,12 @@ public enum DHCPMessageType
 		return value;
 	}
 
+	/**
+	 * Get Bytes
+	 * Get the bytes of the current message type.
+	 * 
+	 * @return
+	 */
 	public byte[] getBytes() {
 		byte[] msg = new byte[4];
 		System.arraycopy(Utils.toBytes(53, 1), 0, msg, 0, 1);
@@ -35,6 +47,13 @@ public enum DHCPMessageType
 		return msg;
 	}
 	
+	/**
+	 * Get DHCP Message Type
+	 * Get the message type of the given bytes.
+	 * 
+	 * @param bytes
+	 * @return
+	 */
 	public static DHCPMessageType getType(byte[] bytes) {
 		byte[] msg = new byte[1];
 		msg[0] = bytes[2];

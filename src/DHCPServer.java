@@ -2,7 +2,11 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
-
+/**
+ * 
+ * @author Geysen Stijn & Moons Marnix
+ *
+ */
 public class DHCPServer {
 	//port of the server (normally 67 for DHCP)
 	static int port = 1234;

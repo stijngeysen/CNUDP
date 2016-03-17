@@ -3,7 +3,11 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-
+/**
+ * 
+ * @author Geysen Stijn & Moons Marnix
+ *
+ */
 public class DHCPRespond extends Thread{
 	//initialize
     DatagramSocket socket = null;

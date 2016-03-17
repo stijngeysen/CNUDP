@@ -4,16 +4,35 @@ import java.util.Date;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * Used IP's
+ * Class which has an arraylist to save all the used 'client IPs' with the added or
+ * extended times of these IP's. This class also contains methods to add, extend and
+ * remove 'client IPs'.
+ * 
+ * @author Geysen Stijn & Moons Marnix
+ *
+ */
 public class UsedIPs {
 	
 	static Random rand = new Random();
 	
+	/**
+	 * Used IP's
+	 * Initialize with an empty arraylist usedIPs.
+	 */
 	public UsedIPs() {
 		
 	}
 	
 	public static ArrayList<String> usedIPs = new ArrayList<String>();
 	
+	/**
+	 * Ask IP
+	 * Ask a new IP
+	 * 
+	 * @return
+	 */
 	public byte[] askIP() {
 		byte[] YI = new byte[4];
 		rand.nextBytes(YI);
