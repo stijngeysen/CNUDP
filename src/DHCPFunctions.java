@@ -31,7 +31,7 @@ import java.util.Random;
  * @author Geysen Stijn & Moons Marnix
  *
  */
-public class DHCPFunctions{ //TODO: flags, een beetje consistent zijn met het broadcasten/unicasten.
+public class DHCPFunctions{
 	static Random rand = new Random();
 	static int leaseTime = 5;
 
@@ -96,7 +96,7 @@ public class DHCPFunctions{ //TODO: flags, een beetje consistent zijn met het br
 	 * 		- hops		0
 	 * 		- xid		previous transactionID
 	 * 		- sec		0
-	 * 		- flags		-32768 (broadcast)
+	 * 		- flags		received flag options
 	 * 		- CIP		0
 	 * 		- YI		'client's IP'
 	 * 		- SI		Server's IP or 255.255.255.255 for broadcast
@@ -130,7 +130,7 @@ public class DHCPFunctions{ //TODO: flags, een beetje consistent zijn met het br
 		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 19, 1);	
 		
 		DHCPMessage offerMessage = new DHCPMessage(Utils.toBytes(2, 1), Utils.toBytes(1, 1), Utils.toBytes(6, 1), Utils.toBytes(0, 1), 
-				message.getTransactionID(), Utils.toBytes(sec, 2), Utils.toBytes(-32768, 2), Utils.toBytes(0), yourIP.getAddress(), socket.getLocalAddress().getAddress(), 
+				message.getTransactionID(), Utils.toBytes(sec, 2), message.getFlags(), Utils.toBytes(0), yourIP.getAddress(), socket.getLocalAddress().getAddress(), 
 				new byte[4], CHA, new byte[64], new byte[128], options);
 		if (message.getFlags()[0] == 1) { //1e bit van flags = 1 --> broadcast
 			broadcastMessage(socket, offerMessage, packet.getPort()); //normaal is 68 UDP poort voor DHCP client
@@ -151,7 +151,7 @@ public class DHCPFunctions{ //TODO: flags, een beetje consistent zijn met het br
 	 * 		- hops		0
 	 * 		- xid		previous transactionID
 	 * 		- sec		0
-	 * 		- flags		0 (unicast)
+	 * 		- flags		received flag options
 	 * 		- CIP		yourIP
 	 * 		- YI		byte[4]
 	 * 		- SI		Server's IP or 255.255.255.255 for broadcast
@@ -185,7 +185,7 @@ public class DHCPFunctions{ //TODO: flags, een beetje consistent zijn met het br
 		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 25, 1);
 		
 		DHCPMessage requestMessage = new DHCPMessage(Utils.toBytes(1, 1), Utils.toBytes(1, 1), Utils.toBytes(6, 1), Utils.toBytes(0, 1), 
-				message.getTransactionID(), Utils.toBytes(sec, 2), Utils.toBytes(0, 2), yourIP, new byte[4], message.getServerIP(), 
+				message.getTransactionID(), Utils.toBytes(sec, 2), message.getFlags(), yourIP, new byte[4], message.getServerIP(), 
 				new byte[4], message.getClientHardwareAddress(), message.getServerHostName(), new byte[128], options);
 
 		if (message.getFlags()[0] == 1) {
@@ -216,7 +216,7 @@ public class DHCPFunctions{ //TODO: flags, een beetje consistent zijn met het br
 	 * 		- hops		0
 	 * 		- xid		previous transactionID
 	 * 		- sec		0
-	 * 		- flags		-32768 (broadcast)
+	 * 		- flags		received flags options
 	 * 		- CIP		client IP address
 	 * 		- YI		'client's IP'
 	 * 		- SI		Server's IP or 255.255.255.255 for broadcast
@@ -251,7 +251,7 @@ public class DHCPFunctions{ //TODO: flags, een beetje consistent zijn met het br
 		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 19, 1);
 		
 		DHCPMessage acknowledgeMessage = new DHCPMessage(Utils.toBytes(2, 1), Utils.toBytes(1, 1), Utils.toBytes(6, 1), Utils.toBytes(0, 1), 
-				message.getTransactionID(), Utils.toBytes(sec, 2), Utils.toBytes(-32768, 2), clientIP, yourIP.getAddress(), socket.getLocalAddress().getAddress(), 
+				message.getTransactionID(), Utils.toBytes(sec, 2), message.getFlags(), clientIP, yourIP.getAddress(), socket.getLocalAddress().getAddress(), 
 				new byte[4], CHA, new byte[64], new byte[128], options);
 		if (message.getFlags()[0] == 1) { //1e bit van flags = 1 --> broadcast
 			broadcastMessage(socket, acknowledgeMessage, packet.getPort()); //normaal is 68 UDP poort voor DHCP client
@@ -271,7 +271,7 @@ public class DHCPFunctions{ //TODO: flags, een beetje consistent zijn met het br
 	 * 		- hops		0
 	 * 		- xid		previous transactionID
 	 * 		- sec		0
-	 * 		- flags		-32768 (broadcast)
+	 * 		- flags		received flag options
 	 * 		- CIP		client IP address
 	 * 		- YI		'client's IP'
 	 * 		- SI		Server's IP or 255.255.255.255 for broadcast
@@ -303,7 +303,7 @@ public class DHCPFunctions{ //TODO: flags, een beetje consistent zijn met het br
 		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 13, 1);
 		
 		DHCPMessage negativeAcknowledgeMessage = new DHCPMessage(Utils.toBytes(2, 1), Utils.toBytes(1, 1), Utils.toBytes(6, 1), Utils.toBytes(0, 1), 
-				message.getTransactionID(), Utils.toBytes(sec, 2), Utils.toBytes(-32768, 2), clientIP, yourIP.getAddress(), socket.getLocalAddress().getAddress(), 
+				message.getTransactionID(), Utils.toBytes(sec, 2), message.getFlags(), clientIP, yourIP.getAddress(), socket.getLocalAddress().getAddress(), 
 				new byte[4], CHA, new byte[64], new byte[128], options);
 		
 		if (message.getFlags()[0] == 1) { //1e bit van flags = 1 --> broadcast
@@ -326,7 +326,7 @@ public class DHCPFunctions{ //TODO: flags, een beetje consistent zijn met het br
 	 * 		- hops		0
 	 * 		- xid		previous transactionID
 	 * 		- sec		0
-	 * 		- flags		0 (unicast)
+	 * 		- flags		received flag options
 	 * 		- CIP		client IP address
 	 * 		- YI		byte[4]
 	 * 		- SI		Server's IP or 255.255.255.255 for broadcast
@@ -355,7 +355,7 @@ public class DHCPFunctions{ //TODO: flags, een beetje consistent zijn met het br
 		System.arraycopy(DHCPMessage.makeEndOption(), 0, options, 13, 1);	
 		
 		DHCPMessage releaseMessage = new DHCPMessage(Utils.toBytes(1, 1), Utils.toBytes(1, 1), Utils.toBytes(6, 1), Utils.toBytes(0, 1), 
-				message.getTransactionID(), Utils.toBytes(sec, 2), Utils.toBytes(0, 2), message.getClientIP(), new byte[4], message.getServerIP(), 
+				message.getTransactionID(), Utils.toBytes(sec, 2), message.getFlags(), message.getClientIP(), new byte[4], message.getServerIP(), 
 				new byte[4], message.getClientHardwareAddress(), message.getServerHostName(), new byte[128], options);
 
 		//message is the received message, not the newly constructed one
