@@ -1,11 +1,61 @@
 import java.net.*;
 import java.util.Random;
 
-
+/**
+ * DHCP Functions
+ * Class which contains operations a DHCP-server or -client use.
+ * All implemented transactions: Discover, offer, request, acknowledge, negative acknowledge & release.
+ * These transactions all have a standard format:
+ * 		- op		1 byte		Message op code / message type (1 = BOOTREQUEST, 2 = BOOTREPLY)
+ * 		- htype		1 byte		Hardware address type (1 for 10mb ethernet)
+ * 		- hlen		1 byte		Hardware address length (6 for 10mb ethernet)
+ * 		- hops		1 byte		0, optionally used by relay agents
+ * 		- xid		4 bytes		Transaction ID, a random number chosen by the client
+ * 		- sec		2 bytes		Filled in by client, seconds elapsed since client began address acquisition or renewal process
+ * 		- flags		2 bytes		-32768 (2's complement decimal for 1000 0000 0000 0000 , the broadcast flag)
+ * 		- CIP		4 bytes		Client IP address
+ * 		- YI		4 bytes		'your' (client) IP address
+ * 		- SI		4 bytes		IP address of next server to use in bootstrap
+ * 		- GI		4 bytes		Relay agent IP address
+ * 		- CHA		4 bytes		Client hardware address (MAC)
+ * 		- SName		16 bytes	Optional server host name
+ * 		- BootFile	32 bytes	Boot file name
+ * 		- Options	  var		Optional parameters field, see below
+ * Options begin with a magic cookie (hex 63.82.53.63) and end with code 255.
+ * All options used in this project:
+ * 		- 50	Requested IP Address	Used in DHCPRequest
+ * 		- 51	IP Adress Lease Time	Used in DHCPOffer and DHCPAck
+ * 		- 53	DHCP Message Type		Used everywhere
+ * 		- 54	Server Identifier		Used in DHCPOffer, DHCPRequest, DHCPAck, DHCPNak and DHCPRelease
+ * 
+ * @author Geysen Stijn & Moons Marnix
+ *
+ */
 public class DHCPFunctions{
 	static Random rand = new Random();
 	static int leaseTime = 5;
 
+	/**
+	 * DHCP Discover
+	 * Client broadcast to locate available servers.
+	 * 		- op		1 (request)
+	 * 		- htype		1 for 10mb ethernet
+	 * 		- hlen		6 for 10mb ethernet
+	 * 		- hops		0
+	 * 		- xid		random
+	 * 		- sec		0
+	 * 		- flags		-32768
+	 * 		- CIP		0
+	 * 		- YI		byte[4]
+	 * 		- SI		255.255.255.255 is normally used for broadcast, but for not disrupting the network infrastructure we use 10.33.14.246
+	 * 		- GI		byte[4]
+	 * 		- CHA		random
+	 * 		- SName		byte[64]
+	 * 		- BootFile	byte[128]
+	 * 		- Options	53
+	 * Options 
+	 * @param socket
+	 */
 	public static void DHCPDiscover(DatagramSocket socket){
 		//op:		1 (request) (1 = bootrequest, 2 = bootreply)
 		//htype: 	1 (ethernet) (hardware address type)
@@ -53,6 +103,15 @@ public class DHCPFunctions{
 		System.out.println("The transactionID was: " + Utils.fromBytes(discoverMessage.getTransactionID()));
 	}
 
+	/**
+	 * DHCP Offer
+	 * Server to client in response to DHCPDISCOVER with offer of configuration parameters.
+	 * 
+	 * @param socket
+	 * @param message
+	 * @param packet
+	 * @param yourIP
+	 */
 	public static void DHCPOffer(DatagramSocket socket, DHCPMessage message, DatagramPacket packet, InetAddress yourIP) {
 		//op:		2 (reply)
 		//htype: 	1 (ethernet)
@@ -137,6 +196,16 @@ public class DHCPFunctions{
 		System.out.println("DHCPRequest message broadcasted by me (Client)");
 	}*/
 	
+	/**
+	 * DHCP Request
+	 * Client message to servers either (a) requesting offered parameters from one server and implicitly declining offers from all others, 
+	 * (b) confirming correctness of previously allocated address after, e.g., system reboot, or (c) extending the lease on a particular network address.
+	 * 
+	 * @param socket
+	 * @param message
+	 * @param packet
+	 * @param yourIP
+	 */
 	public static void DHCPRequest(DatagramSocket socket, DHCPMessage message, DatagramPacket packet, byte[] yourIP) {		
 		//op:		1 (request) (1 = bootrequest, 2 = bootreply)
 		//htype: 	1 (ethernet) (hardware address type)
@@ -184,6 +253,16 @@ public class DHCPFunctions{
 		}
 	}
 
+	/**
+	 * DHCP Acknowledge
+	 * Server to client with configuration parameters, including committed network address.
+	 * 
+	 * @param socket
+	 * @param message
+	 * @param packet
+	 * @param yourIP
+	 * @param clientIP
+	 */
 	public static void DHCPAck(DatagramSocket socket, DHCPMessage message, DatagramPacket packet, InetAddress yourIP, byte[] clientIP){
 		//op:		2 (reply)
 		//htype: 	1 (ethernet)
@@ -227,6 +306,16 @@ public class DHCPFunctions{
 //		System.out.println(Utils.toHexString(message.getOptions()));
 	}
 
+	/**
+	 * DHCP Negative Acknowledge
+	 * Server to client indicating client's notion of network address is incorrect (e.g., client has moved to new subnet) or client's lease as expired
+	 * 
+	 * @param socket
+	 * @param message
+	 * @param packet
+	 * @param yourIP
+	 * @param clientIP
+	 */
 	public static void DHCPNak(DatagramSocket socket, DHCPMessage message, DatagramPacket packet, InetAddress yourIP, byte[] clientIP) {
 		//op:		2 (reply)
 		//htype: 	1 (ethernet)
@@ -272,6 +361,14 @@ public class DHCPFunctions{
 //		System.out.println(Utils.toHexString(negativeAcknowledgeMessage.getOptions()));
 	}
 
+	/**
+	 * DHCP Release
+	 * Client to server relinquishing network address and cancelling remaining lease.
+	 * 
+	 * @param socket
+	 * @param message
+	 * @param packet
+	 */
 	public static void DHCPRelease(DatagramSocket socket, DHCPMessage message, DatagramPacket packet) {
 		//op:		1 (request) (1 = bootrequest, 2 = bootreply)
 		//htype: 	1 (ethernet) (hardware address type)
@@ -317,7 +414,7 @@ public class DHCPFunctions{
 
 	public static void broadcastMessage(DatagramSocket socket, DHCPMessage message, int deliveryPort){
 		try {
-			InetAddress broadcast = InetAddress.getByName("255.255.255.255"); // 255.255.255.255		10.33.14.246     0.0.0.0
+			InetAddress broadcast = InetAddress.getByName("0.0.0.0"); // 255.255.255.255		10.33.14.246     0.0.0.0
 			unicastMessage(socket, message, deliveryPort, broadcast);
 		} catch (Exception e) {
 			e.printStackTrace();
