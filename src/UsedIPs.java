@@ -29,7 +29,7 @@ public class UsedIPs {
 	
 	/**
 	 * Ask IP
-	 * Ask a new IP
+	 * Return an IP which is not yet inside the arraylist.
 	 * 
 	 * @return
 	 */
@@ -42,6 +42,13 @@ public class UsedIPs {
 		return YI;
 	}
 	
+	/**
+	 * Contain IP
+	 * Returns if the given IP is inside the saved arraylist.
+	 * 
+	 * @param IP
+	 * @return
+	 */
 	public boolean containIP(byte[] IP){
 		boolean result = false;
 		for(int i=0;i<UsedIPs.usedIPs.size();i++){
@@ -53,12 +60,25 @@ public class UsedIPs {
 		return result;
 	}
 	
-	public void addIP(byte[] IP){
+	/**
+	 * Add IP
+	 * Add the given IP inside the arraylist.
+	 * 
+	 * @param IP
+	 */
+	public void addIP(byte[] IP){ //TODO: het is zo mogelijk om dezelfde IP 2 keer toe te voegen
 		Date date = new Date();
 		long time = date.getTime();
 		UsedIPs.usedIPs.add("" + (time) + Utils.fromBytes(IP));
 	}
 	
+	/**
+	 * Extend IP
+	 * Returns true if the given IP hasn't expired yet and extends the given IP.
+	 * 
+	 * @param IP
+	 * @return
+	 */
 	public boolean extendIP(byte[] IP) {
 		boolean result = false;
 		for(int i=0;i<UsedIPs.usedIPs.size();i++){
@@ -78,6 +98,12 @@ public class UsedIPs {
 		return result;
 	}
 	
+	/**
+	 * Remove Extinct IP's
+	 * Remove all the IP's from the arraylist which exist longer then the given leaseTime.
+	 * 
+	 * @param leaseTime
+	 */
 	public void removeExtinctIPs(int leaseTime) {
 		Date date = new Date();
 		long time = date.getTime();
@@ -90,6 +116,12 @@ public class UsedIPs {
 		}
 	}
 	
+	/**
+	 * Remove IP
+	 * Remove the given IP from the arraylist.
+	 * 
+	 * @param IP
+	 */
 	public void removeIP(byte[] IP) {
 		for(int i=0;i<UsedIPs.usedIPs.size();i++){
 	        if(((UsedIPs.usedIPs.get(i)).substring(13, UsedIPs.usedIPs.get(i).length())).equals("" + Utils.fromBytes(IP))){

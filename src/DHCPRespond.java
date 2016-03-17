@@ -4,6 +4,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 /**
+ * DHCP Respond
+ * Thread to handle a message.
  * 
  * @author Geysen Stijn & Moons Marnix
  *
@@ -17,13 +19,24 @@ public class DHCPRespond extends Thread{
 	//leaseTime (has to be the same as the leasetime in DHCPFunctions.java
 	static int leaseTime = 5;
 	
-    //Constructor
+    /**
+     * DHCP Respond
+     * Construct thread with given socket, packet and object usedIPs (which contains the arraylist of all the used IP's)
+     * 
+     * @param socket
+     * @param packet
+     * @param usedIPs
+     */
     public DHCPRespond(DatagramSocket socket, DatagramPacket packet, UsedIPs usedIPs){
     	this.socket = socket;
     	this.packet = packet;
     	this.usedIPs = usedIPs;
     }
     
+    /**
+     * Run
+     * Remove extinct IP's.
+     */
 	@Override
 	public void run() {
 		try {
@@ -35,6 +48,12 @@ public class DHCPRespond extends Thread{
 		}
 	}
 	
+	/**
+	 * Response
+	 * Get the message type and handle it.
+	 * 
+	 * @throws UnknownHostException
+	 */
 	private void response() throws UnknownHostException {
 		//process data
 		byte[] msg = packet.getData();

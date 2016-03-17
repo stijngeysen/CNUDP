@@ -3,6 +3,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
 /**
+ * DHCP Server
+ * Receive datagrampackets, make different threads of them and handle them in these threads. //TODO: beetje juist? :p
  * 
  * @author Geysen Stijn & Moons Marnix
  *

@@ -31,7 +31,7 @@ import java.util.Random;
  * @author Geysen Stijn & Moons Marnix
  *
  */
-public class DHCPFunctions{
+public class DHCPFunctions{ //TODO: flags, een beetje consistent zijn met het broadcasten/unicasten.
 	static Random rand = new Random();
 	static int leaseTime = 5;
 
