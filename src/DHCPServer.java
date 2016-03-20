@@ -4,7 +4,7 @@ import java.net.DatagramSocket;
 
 /**
  * DHCP Server
- * Receive datagrampackets, make different threads of them and handle them in these threads. //TODO: beetje juist? :p
+ * Receive datagrampackets, make different threads of them and handle them in these threads.
  * 
  * @author Geysen Stijn & Moons Marnix
  *
@@ -14,8 +14,10 @@ public class DHCPServer {
 	static int port = 1234;
 	//max packet length (min 236 + options)
 	static int lengte = 512;
+	//lease time
+	static int leaseTime = 5;
 	//used IP's
-	static UsedIPs usedIPs = new UsedIPs();
+	static UsedIPs usedIPs = new UsedIPs(leaseTime);
 	//Main class
 	public static void main(String[] args) throws IOException {
 		DatagramSocket welcomeSocket = new DatagramSocket(port);
@@ -32,7 +34,7 @@ public class DHCPServer {
     		//get the next packet
     		welcomeSocket.receive(receivePacket);
     		//Run new Thread for Response
-    		(new DHCPRespond(welcomeSocket, receivePacket, usedIPs)).start();
+    		(new DHCPRespond(welcomeSocket, receivePacket, usedIPs, leaseTime)).start();
 		}
 		welcomeSocket.close();
 	}

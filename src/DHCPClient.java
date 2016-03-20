@@ -113,7 +113,6 @@ class DHCPClient
 			for (int i=0; i<nrExtend; i++) {
 				System.out.println("CLIENT STEP 5: EXTEND REQUEST: ");
 				System.out.println();
-				int IPLeaseTime = Utils.fromBytes(message.getMessageOption(51));
 				TimeUnit.SECONDS.sleep(5/2); //om niet te lang te moeten wachten IPLeasetime veranderd in 10 sec
 
 				DHCPFunctions.DHCPRequest(socket, message, receivePacket, message.getYourIP());

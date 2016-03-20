@@ -17,7 +17,7 @@ public class DHCPRespond extends Thread{
     UsedIPs usedIPs = null;
     
 	//leaseTime (has to be the same as the leasetime in DHCPFunctions.java
-	static int leaseTime = 5;
+	int leaseTime = 5;
 	
     /**
      * DHCP Respond
@@ -27,22 +27,20 @@ public class DHCPRespond extends Thread{
      * @param packet
      * @param usedIPs
      */
-    public DHCPRespond(DatagramSocket socket, DatagramPacket packet, UsedIPs usedIPs){
+    public DHCPRespond(DatagramSocket socket, DatagramPacket packet, UsedIPs usedIPs, int leaseTime){
     	this.socket = socket;
     	this.packet = packet;
     	this.usedIPs = usedIPs;
+    	this.leaseTime = leaseTime;
     }
     
     /**
      * Run
-     * Remove extinct IP's.
      */
 	@Override
 	public void run() {
 		try {
 			response();
-    		//Delete IP's which exist for too long
-    		usedIPs.removeExtinctIPs(leaseTime); //TODO: optimaliseren
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

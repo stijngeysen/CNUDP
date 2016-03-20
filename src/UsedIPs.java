@@ -21,8 +21,8 @@ public class UsedIPs {
 	 * Used IP's
 	 * Initialize with an empty arraylist usedIPs.
 	 */
-	public UsedIPs() {
-		
+	public UsedIPs(int leaseTime) {
+		new RemoveExtinctIPsTimer(this, leaseTime);
 	}
 	
 	public static ArrayList<String> usedIPs = new ArrayList<String>();
@@ -66,7 +66,7 @@ public class UsedIPs {
 	 * 
 	 * @param IP
 	 */
-	public void addIP(byte[] IP){ //TODO: het is zo mogelijk om dezelfde IP 2 keer toe te voegen
+	public void addIP(byte[] IP){
 		Date date = new Date();
 		long time = date.getTime();
 		UsedIPs.usedIPs.add("" + (time) + Utils.fromBytes(IP));
