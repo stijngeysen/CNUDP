@@ -110,7 +110,13 @@ public class UsedIPs {
 		for(int i=0; i<UsedIPs.usedIPs.size(); i++){
 	        if((time - Long.valueOf(UsedIPs.usedIPs.get(i).substring(0, 13))) > 1000*leaseTime){ //convert from sec to msec
 	        	System.out.println("Lease Time of this IP is expired: the IP will be removed from the list of leased IPs: ");
-	        	System.out.println(((UsedIPs.usedIPs.get(i)).substring(13, UsedIPs.usedIPs.get(i).length())));
+	        	try {
+					System.out.println(InetAddress.getByAddress(Utils.toBytes(Integer.valueOf(((UsedIPs.usedIPs.get(i)).substring(13, UsedIPs.usedIPs.get(i).length()))))));
+				} catch (NumberFormatException e) {
+					System.out.println("NumberFormatException: UsedIPs removeExtinctIPs");
+				} catch (UnknownHostException e) {
+					System.out.println("UnknownHostException: UsedIPs removeExtinctIPs");
+				}
 	            UsedIPs.usedIPs.remove(i);
 	        }
 		}
