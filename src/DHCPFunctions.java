@@ -375,7 +375,7 @@ public class DHCPFunctions{
 	 */
 	public static void broadcastMessage(DatagramSocket socket, DHCPMessage message, int deliveryPort){
 		try {
-			InetAddress broadcast = InetAddress.getByName("0.0.0.0"); // 255.255.255.255		10.33.14.246     0.0.0.0
+			InetAddress broadcast = InetAddress.getByName("10.33.14.246"); // 255.255.255.255		10.33.14.246     0.0.0.0
 			unicastMessage(socket, message, deliveryPort, broadcast);
 		} catch (Exception e) {
 			e.printStackTrace();
