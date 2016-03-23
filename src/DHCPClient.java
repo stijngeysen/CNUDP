@@ -19,7 +19,18 @@ class DHCPClient
 	
 	public static void main(String args[]) throws Exception
 	{
-		DatagramSocket socket = new DatagramSocket(port);
+		DatagramSocket socket;
+		int j = 0;
+		while (true) {
+			try {
+				socket = new DatagramSocket(port+j);
+				break;
+			} catch (Exception e) {
+				j += 1;
+				continue;
+			}
+		}
+		
 		while(! socket.isClosed()){
 			System.out.println();
 			System.out.println("CLIENT STEP 1: SEND DISCOVER: ");
